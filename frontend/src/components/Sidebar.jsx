@@ -7,6 +7,9 @@ import { MdEditDocument } from 'react-icons/md';
 import Logout from './Logout';
 
 const Sidebar = () => {
+  const authUser = () => {
+    console.log('test');
+  };
   return (
     <aside className="sticky left-0 top-0 flex h-screen min-w-12 flex-col items-center overflow-y-auto rounded-md border border-r border-gray-800 bg-purple-700 bg-opacity-10 bg-clip-padding py-8 backdrop-blur-xl backdrop-filter hover:bg-purple-900/20 sm:w-16">
       <nav className="flex h-full flex-col gap-3">
