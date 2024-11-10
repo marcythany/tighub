@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import toast from 'react-hot-toast';
 
 import Search from '../components/Search';
 import SortRepos from '../components/SortRepos';
@@ -12,22 +13,37 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
 
   const [sortType, setSortType] = useState('forks');
+  const user = true;
 
-  const getUserProfileAndRepos = async () => {
+  const getUserProfileAndRepos = useCallback(async () => {
+    setLoading(true);
     try {
-    } catch (error) {}
-  };
+      const userRes = await fetch('https://api.github.com/users/marcythany');
+      const userProfile = await userRes.json();
+      setUserProfile(userProfile);
+
+      const reposRes = await fetch(userProfile.repos_url);
+      const repos = await reposRes.json();
+      setRepos(repos);
+      console.log('userProfile:', userProfile);
+      console.log('repos:', repos);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     getUserProfileAndRepos();
-  }, [sortType]);
+  }, [getUserProfileAndRepos]);
 
   return (
     <div className="m-4">
       <Search />
       <SortRepos />
       <div className="flex flex-col items-start justify-center gap-4 lg:flex-row">
-        <ProfileInfo />
+        <ProfileInfo userProfile={userProfile} />
         <Repos />
         <Spinner />
       </div>
