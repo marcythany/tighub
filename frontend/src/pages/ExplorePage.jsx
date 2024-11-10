@@ -36,3 +36,5 @@ const ExplorePage = () => {
     </div>
   );
 };
+
+export default ExplorePage;

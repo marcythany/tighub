@@ -55,3 +55,5 @@ const LikesPage = () => {
     </div>
   );
 };
+
+export default LikesPage;
