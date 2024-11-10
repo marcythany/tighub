@@ -41,3 +41,5 @@ const Repo = () => {
     </li>
   );
 };
+
+export default Repo;

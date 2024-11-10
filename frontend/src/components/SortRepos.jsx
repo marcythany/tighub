@@ -22,3 +22,5 @@ const SortRepos = () => {
     </div>
   );
 };
+
+export default SortRepos;

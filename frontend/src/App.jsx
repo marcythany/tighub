@@ -1,12 +1,13 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
-import Sidebar from './components/Sidebar'
+import Sidebar from './components/Sidebar';
 
-import HomePage from './pages/HomePage'
-import LoginPage from './pages/LoginPage'
-import SignupPage from './pages/SignupPage'
-import ExplorePage from './pages/ExplorePage'
-import LikesPage from './pages/LikesPage'
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
+import ExplorePage from './pages/ExplorePage';
+import LikesPage from './pages/LikesPage';
 
 function App() {
   return (
@@ -21,10 +22,11 @@ function App() {
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/likes" element={<LikesPage />} />
           </Routes>
+          <Toaster />
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

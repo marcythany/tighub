@@ -11,3 +11,5 @@ const Repos = () => {
     </div>
   );
 };
+
+export default Repos;
