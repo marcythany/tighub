@@ -11,14 +11,14 @@ const HomePage = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [sortType, setSortType] = useState('forks');
+  const [sortType, setSortType] = useState('recent');
   const user = true;
 
   const getUserProfileAndRepos = useCallback(
     async (username = 'marcythany') => {
       setLoading(true);
       try {
-        const token = import.meta.env.VITE_GITHUB_TOKEN;
+        const token = import.meta.env.VITE_GITHUB_TOKEN; // Obtém o token do GitHub do ambiente
         if (!token) {
           console.warn('GitHub token não encontrado');
         }
@@ -54,6 +54,7 @@ const HomePage = () => {
         }
 
         const repos = await reposRes.json();
+        repos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         setRepos(repos);
         console.log('userProfile:', userProfile);
         console.log('repos:', repos);
