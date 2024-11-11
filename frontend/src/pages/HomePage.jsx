@@ -11,7 +11,6 @@ const HomePage = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const [sortType, setSortType] = useState('forks');
   const user = true;
 
@@ -19,18 +18,51 @@ const HomePage = () => {
     async (username = 'marcythany') => {
       setLoading(true);
       try {
-        const userRes = await fetch(`https://api.github.com/users/${username}`);
+        const token = import.meta.env.VITE_GITHUB_TOKEN;
+        if (!token) {
+          console.warn('GitHub token não encontrado');
+        }
+
+        // Requisição do perfil do usuário
+        const userRes = await fetch(
+          `https://api.github.com/users/${username}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+
+        if (!userRes.ok) {
+          throw new Error(`GitHub API error: ${userRes.status}`);
+        }
+
         const userProfile = await userRes.json();
         setUserProfile(userProfile);
 
-        const reposRes = await fetch(userProfile.repos_url);
+        // Requisição dos repositórios
+        const reposRes = await fetch(userProfile.repos_url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!reposRes.ok) {
+          throw new Error(`GitHub API error: ${reposRes.status}`);
+        }
+
         const repos = await reposRes.json();
         setRepos(repos);
         console.log('userProfile:', userProfile);
         console.log('repos:', repos);
+
         return { userProfile, repos };
       } catch (error) {
-        toast.error(error.message);
+        console.error('Error fetching GitHub data:', error);
+        toast.error(error.message || 'Erro ao buscar dados do GitHub');
+        return { userProfile: null, repos: [] };
       } finally {
         setLoading(false);
       }
@@ -45,26 +77,37 @@ const HomePage = () => {
   const onSearch = async (e, username) => {
     e.preventDefault();
 
-    setLoading(true);
-    setRepos([]);
-    setUserProfile(null);
-    const { userProfile, repos } = await getUserProfileAndRepos(username);
+    try {
+      setLoading(true);
+      setRepos([]);
+      setUserProfile(null);
 
-    setUserProfile(userProfile);
-    setRepos(repos);
-    setLoading(false);
+      const { userProfile, repos } = await getUserProfileAndRepos(username);
+
+      if (userProfile) setUserProfile(userProfile);
+      if (repos) setRepos(repos);
+    } catch (error) {
+      toast.error('Erro ao buscar usuário');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onSort = (sortType) => {
+    const sortedRepos = [...repos]; // Cria uma cópia do array para não mutar o estado diretamente
+
     if (sortType === 'recent') {
-      repos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      sortedRepos.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at),
+      );
     } else if (sortType === 'stars') {
-      repos.sort((a, b) => b.stargazers_count - a.stargazers_count);
+      sortedRepos.sort((a, b) => b.stargazers_count - a.stargazers_count);
     } else if (sortType === 'forks') {
-      repos.sort((a, b) => b.forks_count - a.forks_count);
+      sortedRepos.sort((a, b) => b.forks_count - a.forks_count);
     }
+
     setSortType(sortType);
-    setRepos([...repos]);
+    setRepos(sortedRepos);
   };
 
   return (
