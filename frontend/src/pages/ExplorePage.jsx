@@ -2,18 +2,52 @@ import { useState } from 'react';
 import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
 import Repos from '../components/Repos';
+import IconComponent, { TECH_ICONS } from '../components/IconComponent';
+
+// Lista de linguagens válidas para pesquisa
+const VALID_LANGUAGES = [
+  'javascript',
+  'python',
+  'java',
+  'c++',
+  'typescript',
+  'go',
+  'html',
+  'css',
+  'ruby',
+  'php',
+  'rust',
+  'kotlin',
+  'dart',
+  'scala',
+  'r',
+  'perl',
+  'haskell',
+  'lua',
+  'shell',
+  'powershell',
+  'sql',
+];
 
 const ExplorePage = () => {
-  //
   const [loading, setLoading] = useState(false);
-  const [repos, setRepos] = useState([]);
+  const [repos, setRepos] = useState([]); // Repositórios com dados e ícones
+  const [selected, setSelected] = useState(null); // Estado para a tecnologia selecionada
   const [selectedLanguage, setSelectedLanguage] = useState('');
 
   const exploreRepos = async (language) => {
     setLoading(true);
-    setRepos([]);
+    setRepos([]); // Limpa os repositórios ao buscar novos
+
+    // Verificar se a linguagem é válida
+    if (!VALID_LANGUAGES.includes(language.toLowerCase())) {
+      toast.error(`A linguagem "${language}" não é válida para pesquisa.`);
+      setLoading(false);
+      return;
+    }
+
     try {
-      const token = import.meta.env.VITE_GITHUB_TOKEN;
+      const token = import.meta.env.VITE_GITHUB_TOKEN; // Obtém o token do GitHub do ambiente
       if (!token) {
         console.warn('GitHub token não encontrado');
       }
@@ -27,7 +61,18 @@ const ExplorePage = () => {
         },
       );
       const data = await res.json();
-      setRepos(data.items);
+
+      // Adiciona o ícone para cada repositório baseado na linguagem
+      const reposWithIcons = data.items.map((repo) => {
+        const language = repo.language;
+        const techIcon = language ? TECH_ICONS[language] : null; // Procura o ícone correspondente à linguagem
+        return {
+          ...repo,
+          techIcon, // Adiciona o ícone ao repositório
+        };
+      });
+
+      setRepos(reposWithIcons);
       setSelectedLanguage(language);
     } catch (error) {
       toast.error(error.message);
@@ -35,6 +80,12 @@ const ExplorePage = () => {
       setLoading(false);
     }
   };
+
+  const onSelect = (tech) => {
+    setSelected(tech); // Define a tecnologia selecionada
+    exploreRepos(tech.toLowerCase()); // Pesquisa repositórios dessa tecnologia
+  };
+
   return (
     <div className="px-4">
       <div className="bg-glass mx-auto max-w-2xl rounded-md p-4">
@@ -42,43 +93,25 @@ const ExplorePage = () => {
           Explore Popular Repositories
         </h1>
         <div className="my-2 flex flex-wrap justify-center gap-2">
-          <img
-            src="/javascript.svg"
-            alt="JavaScript"
-            className="h-11 cursor-pointer sm:h-20"
-            onClick={() => exploreRepos('javascript')}
-          />
-          <img
-            src="/typescript.svg"
-            alt="TypeScript logo"
-            className="h-11 cursor-pointer sm:h-20"
-            onClick={() => exploreRepos('typescript')}
-          />
-          <img
-            src="/c++.svg"
-            alt="C++ logo"
-            className="h-11 cursor-pointer sm:h-20"
-            onClick={() => exploreRepos('c++')}
-          />
-          <img
-            src="/python.svg"
-            alt="Python logo"
-            className="h-11 cursor-pointer sm:h-20"
-            onClick={() => exploreRepos('python')}
-          />
-          <img
-            src="/java.svg"
-            alt="Java logo"
-            className="h-11 cursor-pointer sm:h-20"
-            onClick={() => exploreRepos('java')}
-          />
+          {Object.keys(TECH_ICONS).map((tech) => (
+            <button
+              key={tech}
+              onClick={() => onSelect(tech)} // Chama onSelect ao clicar
+              className={`flex items-center gap-2 rounded p-2 ${
+                selected === tech ? 'bg-gray-500/20 text-white' : 'bg-blue-900'
+              }`}
+            >
+              <IconComponent name={tech} size={16} />
+              <span className="text-sm">{tech}</span>
+            </button>
+          ))}
         </div>
-        {repos.length > 0 && (
+        {repos && repos.length > 0 && (
           <h2 className="my-4 text-center text-lg font-semibold">
             <span className="me-2 rounded-full bg-blue-100 px-2.5 py-0.5 font-medium text-blue-800">
-              {selectedLanguage.toUpperCase()}{' '}
+              {selectedLanguage ? selectedLanguage.toUpperCase() : 'ALL'}{' '}
             </span>
-            Repositórios
+            Repositories
           </h2>
         )}
         {!loading && repos.length > 0 && (
