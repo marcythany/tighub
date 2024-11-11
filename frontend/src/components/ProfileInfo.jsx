@@ -13,7 +13,7 @@ const ProfileInfo = ({ userProfile }) => {
   // If userProfile is null or undefined, show a loading state or return null
   if (!userProfile) {
     return (
-      <div className="flex w-full flex-col gap-2 md:sticky md:top-10 lg:w-1/3">
+      <div className="flex w-full flex-col gap-2 md:top-10 lg:sticky lg:w-1/3">
         <div className="bg-glass rounded-lg p-4">
           <p className="text-center">Carregando perfil...</p>
         </div>
