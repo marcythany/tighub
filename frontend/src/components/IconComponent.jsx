@@ -54,6 +54,7 @@ export const TECH_ICONS = {
   SQL: { icon: SiMysql, color: '#4479A1' },
 };
 
+// Componente para renderizar ícones de tecnologia
 const IconComponent = ({
   name,
   size = 24,
@@ -65,10 +66,14 @@ const IconComponent = ({
   const tech = TECH_ICONS[name];
 
   if (!tech) {
-    // Fallback icon quando a tecnologia não for encontrada
+    // Fallback com ícone genérico se a tecnologia não for encontrada
     return (
-      <div className={`text-gray-500 ${className}`} title={name}>
-        ?
+      <div
+        className={`text-gray-500 ${className}`}
+        title={`Desconhecido: ${name}`}
+      >
+        <span className="text-xl">❓</span>{' '}
+        {/* Usando o emoji para um ícone genérico */}
       </div>
     );
   }
@@ -96,14 +101,19 @@ const IconComponent = ({
   return iconElement;
 };
 
-// Componente de grupo de ícones
+// Componente para grupo de ícones
 export const IconGroup = ({
-  icons,
+  icons = [], // Verificando se é um array válido
   size = 24,
   showNames = false,
   className = '',
   containerClassName = '',
 }) => {
+  if (!Array.isArray(icons)) {
+    console.error('O parâmetro "icons" deve ser um array.');
+    return null;
+  }
+
   return (
     <div className={`flex flex-wrap gap-4 ${containerClassName}`}>
       {icons.map((name) => (
