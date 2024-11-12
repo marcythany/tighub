@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
+import githubAPI from '../api/github';
 
 import Search from '../components/Search';
 import SortRepos from '../components/SortRepos';
@@ -12,54 +13,26 @@ const HomePage = () => {
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sortType, setSortType] = useState('recent');
-  const user = true;
 
   const getUserProfileAndRepos = useCallback(
     async (username = 'marcythany') => {
       setLoading(true);
       try {
-        const token = import.meta.env.VITE_GITHUB_TOKEN; // Obtém o token do GitHub do ambiente
-        if (!token) {
-          console.warn('GitHub token não encontrado');
-        }
-
-        // Requisição do perfil do usuário
-        const userRes = await fetch(
-          `https://api.github.com/users/${username}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          },
-        );
-
-        if (!userRes.ok) {
-          throw new Error(`GitHub API error: ${userRes.status}`);
-        }
-
-        const userProfile = await userRes.json();
+        // Utilizando a instância do githubAPI para fazer as requisições
+        const userProfile = await githubAPI.getUser(username);
         setUserProfile(userProfile);
 
-        // Requisição dos repositórios
-        const reposRes = await fetch(userProfile.repos_url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
+        // Buscando os repositórios do usuário
+        const repos = await githubAPI.getUserRepositories(username);
 
-        if (!reposRes.ok) {
-          throw new Error(`GitHub API error: ${reposRes.status}`);
-        }
+        // Mantendo a ordenação padrão por data de criação
+        const sortedRepos = [...repos].sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at),
+        );
 
-        const repos = await reposRes.json();
-        repos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        setRepos(repos);
-        console.log('userProfile:', userProfile);
-        console.log('repos:', repos);
+        setRepos(sortedRepos);
 
-        return { userProfile, repos };
+        return { userProfile, repos: sortedRepos };
       } catch (error) {
         console.error('Error fetching GitHub data:', error);
         toast.error(error.message || 'Erro ao buscar dados do GitHub');
@@ -95,7 +68,7 @@ const HomePage = () => {
   };
 
   const onSort = (sortType) => {
-    const sortedRepos = [...repos]; // Cria uma cópia do array para não mutar o estado diretamente
+    const sortedRepos = [...repos];
 
     if (sortType === 'recent') {
       sortedRepos.sort(
@@ -110,6 +83,12 @@ const HomePage = () => {
     setSortType(sortType);
     setRepos(sortedRepos);
   };
+
+  // Função para limpar o cache quando necessário
+  const clearCache = useCallback(() => {
+    githubAPI.clearCache();
+    toast.success('Cache limpo com sucesso!');
+  }, []);
 
   return (
     <div className="m-4">

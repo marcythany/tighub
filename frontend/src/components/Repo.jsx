@@ -1,36 +1,32 @@
-import { useState, useEffect } from 'react'; // Import useState e useEffect
+import { useState, useEffect } from 'react';
 import { FaCodeBranch, FaCopy, FaRegStar } from 'react-icons/fa';
 import { FaCodeFork } from 'react-icons/fa6';
 import { formatDate } from '../utils/functions';
 import toast from 'react-hot-toast';
 import IconComponent from './IconComponent';
 import { TECH_ICONS } from './IconComponent';
+import githubAPI from '../api/github';
 
 const Repo = ({ repo }) => {
-  const [languages, setLanguages] = useState([]); // State to store languages of the repo
+  const [languages, setLanguages] = useState([]); // State para armazenar linguagens do repositório
 
   const formattedDate = formatDate(repo.created_at);
 
-  // Fetch the languages used in the repo
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
-        const response = await fetch(
-          `https://api.github.com/repos/${repo.full_name}/languages`,
-        );
-        const data = await response.json();
-        // Filter languages that are in TECH_ICONS
+        const data = await githubAPI.getLanguages(repo.full_name); // Usa getLanguages da API do GitHub
         const usedLanguages = Object.keys(data).filter((language) =>
           TECH_ICONS.hasOwnProperty(language),
         );
         setLanguages(usedLanguages);
       } catch (error) {
-        console.error('Error fetching languages:', error);
+        console.error('Erro ao buscar linguagens:', error);
       }
     };
 
     fetchLanguages();
-  }, [repo.full_name]); // Run when repo.full_name changes
+  }, [repo.full_name]); // Executa quando repo.full_name muda
 
   const handlerCloneClick = async (repo) => {
     try {
@@ -74,15 +70,15 @@ const Repo = ({ repo }) => {
       <p className="mb-4 text-base font-normal text-gray-500">
         {repo.description ? repo.description.slice(0, 500) : 'Sem descrição'}
       </p>
-      <div className="my-2 flex flex-wrap justify-center gap-2">
+      <div className="my-2 flex flex-wrap justify-start gap-2">
         {/* Exibe apenas as linguagens do repositório que estão no TECH_ICONS */}
         {languages.map((tech) => (
           <button
             key={tech}
-            className={`flex cursor-auto items-center gap-2 rounded bg-gray-500/20 p-2 text-white`}
+            className="rounded-full bg-cyan-200/70 px-3 py-1 text-sm font-medium text-indigo-950/90"
           >
-            <IconComponent name={tech} size={16} />
-            <span className="text-sm">{tech}</span>
+            <IconComponent name={tech} className="mr-2 inline-block h-4 w-4" />
+            {tech}
           </button>
         ))}
       </div>
