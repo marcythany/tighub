@@ -82,25 +82,24 @@ tighub/
 ```
 Como Executar o Projeto
 Clone o repositório:
-
-
 ```git clone https://github.com/usuario/tighub.git```
-Navegue até o diretório do projeto:
 
+Navegue até o diretório do projeto:
 ```cd tighub/frontend```
+
 Instale as dependências:
 
 ```npm install```
 Inicie o servidor de desenvolvimento:
-
 ```npm start```
-Abra o navegador e acesse:
 
-http://localhost:3000
+Abra o navegador e acesse:
+```http://localhost:3000```
+
 Configuração do Ambiente
 Certifique-se de configurar as variáveis de ambiente no arquivo .env:
-
 ```VITE_GITHUB_TOKEN=your_github_personal_access_token```
+
 Contribuições
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull requests.
 
