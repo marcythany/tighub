@@ -75,7 +75,7 @@ const Repo = ({ repo }) => {
         {languages.map((tech) => (
           <button
             key={tech}
-            className="rounded-full bg-cyan-200/70 px-3 py-1 text-sm font-medium text-indigo-950/90"
+            className="flex items-center rounded-full bg-cyan-200/70 px-3 py-1 text-sm font-medium text-indigo-950/90"
           >
             <IconComponent name={tech} className="mr-2 inline-block h-4 w-4" />
             {tech}
