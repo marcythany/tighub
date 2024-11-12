@@ -90,6 +90,7 @@ Navegue até o diretório do projeto:
 Instale as dependências:
 
 ```npm install```
+
 Inicie o servidor de desenvolvimento:
 ```npm start```
 
