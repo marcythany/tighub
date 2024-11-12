@@ -2,20 +2,28 @@
 
 TigHub é um estudo de clone do GitHub, uma plataforma para hospedar e compartilhar repositórios de código-fonte. Este projeto foi criado para fornecer uma interface simples e intuitiva para gerenciar repositórios, perfis de usuários e muito mais.
 
-## Funcionalidades
-
+## Funcionalidades 
 - **Busca de Repositórios**: Pesquise repositórios com base em linguagens de programação e estrelas.
 - **Perfis de Usuários**: Visualize perfis de usuários e seus repositórios públicos.
 - **Cache de Dados**: Utilize cache para armazenar temporariamente os dados e melhorar o desempenho.
 - **Ordenação de Repositórios**: Ordene repositórios por data de criação, estrelas ou forks.
 - **Limpeza de Cache**: Limpe o cache manualmente quando necessário.
+- **Autenticação**: Sistema de login e registro de usuários (futuro).
+- **Repositórios Favoritados**: Adicione e gerencie repositórios favoritos (futuro).
+- **Busca de Usuários**: Pesquise usuários e visualize seus repositórios.
 
-## Tecnologias Utilizadas
+## Tecnologias Utilizadas 
 
+### Frontend 
+- **Vite**: Ferramenta de build rápida e moderna.
 - **React**: Biblioteca JavaScript para construção de interfaces de usuário.
+- **React Router Dom**: Biblioteca para roteamento em aplicativos React.
 - **Tailwind CSS**: Framework CSS para estilização rápida e responsiva.
-- **JavaScript**: Utilizado para desenvolvimento de funcionalidades do front-end.
+- **React Icons**: Biblioteca de ícones para React.
+- **JavaScript (ES6+)**: Utilizado para desenvolvimento de funcionalidades do front-end.
 - **React Hot Toast**: Biblioteca para exibição de notificações.
+
+### Backend - **Em desenvolvimento**
 
 ## Estrutura do Projeto
 
