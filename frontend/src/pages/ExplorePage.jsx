@@ -1,37 +1,8 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import githubAPI from '../api/github';
 import Spinner from '../components/Spinner';
 import Repos from '../components/Repos';
 import IconComponent, { TECH_ICONS } from '../components/IconComponent';
-
-// Lista de linguagens válidas para pesquisa
-const VALID_LANGUAGES = [
-  'javascript',
-  'python',
-  'java',
-  'c++',
-  'c#',
-  'typescript',
-  'go',
-  'html',
-  'css',
-  'ruby',
-  'php',
-  'rust',
-  'kotlin',
-  'dart',
-  'scala',
-  'r',
-  'perl',
-  'haskell',
-  'julia',
-  'lua',
-  'shell',
-  'swift',
-  'powershell',
-  'sql',
-];
 
 const ExplorePage = () => {
   const [loading, setLoading] = useState(false);
@@ -40,29 +11,42 @@ const ExplorePage = () => {
   const [selectedLanguage, setSelectedLanguage] = useState('');
 
   const exploreRepos = async (language) => {
-    // Validação inicial da linguagem
-    if (!VALID_LANGUAGES.includes(language.toLowerCase())) {
-      toast.error(`A linguagem "${language}" não é válida para pesquisa.`);
-      return;
-    }
-
     setLoading(true);
-    setRepos([]);
+    setRepos([]); // Limpa os repositórios ao iniciar a nova busca
 
     try {
-      // Usando o módulo githubAPI para buscar os repositórios
-      const repositories = await githubAPI.getRepositories(language);
+      // Faz a chamada para a API do seu backend, que irá buscar os repositórios
+      const res = await fetch(
+        `http://localhost:5000/api/explore/repos/${language}`,
+      );
+
+      if (!res.ok) {
+        throw new Error('Erro ao buscar repositórios');
+      }
+
+      const result = await res.json();
+      console.log('Resposta da API:', result); // Verifique a resposta no console
+
+      const data = result.data.items; // Acesse data.items em vez de result.items
+
+      // Verifica se os repositórios foram encontrados e se são válidos
+      if (
+        !Array.isArray(data) ||
+        !data.every((repo) => repo.id && repo.name && repo.language)
+      ) {
+        throw new Error('A resposta da API não contém repositórios válidos');
+      }
 
       // Adiciona os ícones aos repositórios
-      const reposWithIcons = repositories.map((repo) => ({
+      const reposWithIcons = data.map((repo) => ({
         ...repo,
         techIcon: repo.language ? TECH_ICONS[repo.language] : null,
       }));
 
       setRepos(reposWithIcons);
-      setSelectedLanguage(language);
+      setSelectedLanguage(language); // Define a linguagem selecionada
     } catch (error) {
-      console.error('Error exploring repositories:', error);
+      console.error('Erro ao explorar repositórios:', error);
       toast.error(error.message || 'Erro ao buscar repositórios');
     } finally {
       setLoading(false);
@@ -71,20 +55,13 @@ const ExplorePage = () => {
 
   const onSelect = (tech) => {
     setSelected(tech);
-    exploreRepos(tech.toLowerCase());
-  };
-
-  // Função para limpar o cache dos repositórios
-  const clearReposCache = () => {
-    githubAPI.clearCache();
-    toast.success('Cache de repositórios limpo!');
+    exploreRepos(tech.toLowerCase()); // Chama a API para a linguagem selecionada
   };
 
   // Função para atualizar os repositórios atuais
   const refreshCurrentLanguage = async () => {
     if (selectedLanguage) {
-      clearReposCache();
-      await exploreRepos(selectedLanguage);
+      await exploreRepos(selectedLanguage); // Refaz a busca com a linguagem atual
     }
   };
 
@@ -135,7 +112,6 @@ const ExplorePage = () => {
         {!loading && repos.length > 0 && (
           <Repos repos={repos} alwaysFullWidth />
         )}
-
         {loading && <Spinner />}
       </div>
     </div>

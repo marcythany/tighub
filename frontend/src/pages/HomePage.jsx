@@ -18,12 +18,23 @@ const HomePage = () => {
     async (username = 'marcythany') => {
       setLoading(true);
       try {
-        // Utilizando a instância do githubAPI para fazer as requisições
-        const userProfile = await githubAPI.getUser(username);
-        setUserProfile(userProfile);
+        const res = await fetch(
+          `http://localhost:5000/api/users/profile/${username}`,
+        );
 
-        // Buscando os repositórios do usuário
-        const repos = await githubAPI.getUserRepositories(username);
+        if (!res.ok) {
+          throw new Error('Erro ao buscar dados do GitHub');
+        }
+
+        const data = await res.json();
+        const { repos, userProfile } = data;
+
+        if (!Array.isArray(repos)) {
+          console.error('Repos não é um array:', repos);
+          throw new Error('A resposta da API não contém repositórios válidos');
+        }
+
+        setUserProfile(userProfile);
 
         // Mantendo a ordenação padrão por data de criação
         const sortedRepos = [...repos].sort(
@@ -34,7 +45,7 @@ const HomePage = () => {
 
         return { userProfile, repos: sortedRepos };
       } catch (error) {
-        console.error('Error fetching GitHub data:', error);
+        console.error('Erro ao buscar dados do GitHub:', error);
         toast.error(error.message || 'Erro ao buscar dados do GitHub');
         return { userProfile: null, repos: [] };
       } finally {
@@ -83,12 +94,6 @@ const HomePage = () => {
     setSortType(sortType);
     setRepos(sortedRepos);
   };
-
-  // Função para limpar o cache quando necessário
-  const clearCache = useCallback(() => {
-    githubAPI.clearCache();
-    toast.success('Cache limpo com sucesso!');
-  }, []);
 
   return (
     <div className="m-4">
