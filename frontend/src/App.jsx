@@ -11,8 +11,10 @@ import LikesPage from './pages/LikesPage';
 import { useAuthContext } from './context/AuthContext';
 
 function App() {
-  const { authUser } = useAuthContext();
+  const { authUser, loading } = useAuthContext();
   console.log('Usuário Autenticado:', authUser);
+
+  if (loading) return null;
 
   return (
     <>
