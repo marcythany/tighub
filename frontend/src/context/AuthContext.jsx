@@ -1,25 +1,35 @@
-import { createContext, useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 export const AuthContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuthContext = () => {
   return useContext(AuthContext);
 };
 
-export const AuthProvider = ({ children }) => {
-  const { data: session, status } = useSession();
+export const AuthContextProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(status === 'loading');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setUser(session?.user || null);
-    setLoading(status === 'loading');
-  }, [session, status]);
+    const checkUserLoggedIn = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/auth/check', { credentials: 'include' });
+        const data = await res.json();
+        setAuthUser(data.user); // null or authenticated user object
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkUserLoggedIn();
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ authUser, setAuthUser, loading, user }}>
+    <AuthContext.Provider value={{ authUser, setAuthUser, loading }}>
       {children}
     </AuthContext.Provider>
   );
