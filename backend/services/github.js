@@ -134,12 +134,40 @@ class GithubAPI {
 		return this.getFromCacheOrFetch(cacheKey, url); // Usa o método genérico para buscar ou obter do cache
 	}
 
+	// Função de correção para garantir que username seja uma string válida
 	async getUser(username) {
+		console.log('Tipo de username:', typeof username); // Tipo de dados do username
+		console.log('Valor de username:', username); // Valor de username
+
+		// Verifica se username é uma string
+		if (typeof username !== 'string' || username.trim() === '') {
+			throw new Error('O username fornecido é inválido.');
+		}
+
+		// Verifica se username é um objeto e tenta extrair a string
+		if (typeof username === 'object') {
+			console.log(
+				'username parece ser um objeto, tentando extrair o valor correto...'
+			);
+			// Tente acessar a propriedade correta dependendo da estrutura do objeto
+			if (username && (username.username || username.name)) {
+				username = username.username || username.name; // Extrai o valor adequado
+				console.log('Extraído username:', username);
+			} else {
+				throw new Error('O objeto username não contém uma propriedade válida.');
+			}
+		}
+
+		const cacheKey = `user_${username}`;
 		const url = `${this.baseURL}/users/${username}`;
-		return this.getFromCacheOrFetch('users', url);
+		return this.getFromCacheOrFetch(cacheKey, url);
 	}
 
 	async getUserRepositories(username) {
+		if (typeof username !== 'string' || username.trim() === '') {
+			throw new Error('O username fornecido é inválido.');
+		}
+
 		const url = `${this.baseURL}/users/${username}/repos?sort=created&per_page=10`;
 		return this.getFromCacheOrFetch(`repos_${username}`, url); // Usa cache específico por usuário
 	}
