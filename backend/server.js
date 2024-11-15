@@ -51,8 +51,7 @@ if (process.env.NODE_ENV === 'production') {
 	});
 }
 
-// Conectar ao banco de dados na inicialização
-ConnectDB();
-
-// Em vez de app.listen(), exporte o app para ser usado como uma função serverless
-export default app;
+app.listen(PORT, () => {
+	ConnectDB();
+	console.log('Server started at http://localhost:' + PORT);
+});
