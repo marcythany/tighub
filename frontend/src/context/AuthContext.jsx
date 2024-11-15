@@ -1,47 +1,20 @@
 import { createContext, useState, useEffect } from 'react';
-import { getSession, signin, signout } from '@auth/client';
+import { useSession } from 'next-auth/react';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const { data: session, status } = useSession();
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(status === 'loading');
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const session = await getSession();
-        setUser(session?.user || null);
-      } catch (error) {
-        console.error('Error fetching user session:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
-  }, []);
-
-  const handleSignin = async (provider) => {
-    try {
-      await signin(provider);
-    } catch (error) {
-      console.error(`Error signing in with ${provider}:`, error);
-    }
-  };
-
-  const handleSignout = async () => {
-    try {
-      await signout();
-      setUser(null);
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
+    setUser(session?.user || null);
+    setLoading(status === 'loading');
+  }, [session, status]);
 
   return (
-    <AuthContext.Provider
-      value={{ user, loading, signin: handleSignin, signout: handleSignout }}
-    >
+    <AuthContext.Provider value={{ user, loading }}>
       {children}
     </AuthContext.Provider>
   );

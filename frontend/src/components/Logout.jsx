@@ -1,11 +1,12 @@
 import { useAuthContext } from '../context/AuthContext';
+import { signOut } from 'next-auth/react';
 
 const Logout = () => {
-  const { user, signout } = useAuthContext();
+  const { user } = useAuthContext();
 
   const handleLogout = async () => {
     try {
-      await signout();
+      await signOut();
     } catch (error) {
       console.error('Error signing out:', error);
     }

@@ -1,8 +1,8 @@
-import { signin, signout } from '../context/AuthContext';
+import { signIn } from 'next-auth/react';
 
 export const githubLogin = async () => {
   try {
-    await signin('github');
+    await signIn('github');
   } catch (error) {
     console.error('Error signing in with GitHub:', error);
   }
@@ -10,7 +10,7 @@ export const githubLogin = async () => {
 
 export const githubLogout = async () => {
   try {
-    await signout();
+    await signOut();
   } catch (error) {
     console.error('Error signing out:', error);
   }
