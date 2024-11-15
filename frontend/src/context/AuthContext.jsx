@@ -1,35 +1,47 @@
-import { createContext, useState, useEffect, useContext } from 'react';
-import { toast } from 'react-hot-toast';
+import { createContext, useState, useEffect } from 'react';
+import { getSession, signin, signout } from '@auth/client';
 
 export const AuthContext = createContext();
 
-export const useAuthContext = () => useContext(AuthContext);
-
-export const AuthContextProvider = ({ children }) => {
-  const [authUser, setAuthUser] = useState(null);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkUserLoggedIn = async () => {
-      setLoading(true);
+    const fetchUser = async () => {
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/auth/check`,
-          { credentials: 'include' },
-        );
-        const data = await res.json();
-        setAuthUser(data.user);
+        const session = await getSession();
+        setUser(session?.user || null);
       } catch (error) {
-        toast.error(error);
+        console.error('Error fetching user session:', error);
       } finally {
         setLoading(false);
       }
     };
-    checkUserLoggedIn();
+    fetchUser();
   }, []);
 
+  const handleSignin = async (provider) => {
+    try {
+      await signin(provider);
+    } catch (error) {
+      console.error(`Error signing in with ${provider}:`, error);
+    }
+  };
+
+  const handleSignout = async () => {
+    try {
+      await signout();
+      setUser(null);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ authUser, setAuthUser, loading }}>
+    <AuthContext.Provider
+      value={{ user, loading, signin: handleSignin, signout: handleSignout }}
+    >
       {children}
     </AuthContext.Provider>
   );

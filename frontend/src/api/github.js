@@ -1,3 +1,21 @@
+import { signin, signout } from '../context/AuthContext';
+
+export const githubLogin = async () => {
+  try {
+    await signin('github');
+  } catch (error) {
+    console.error('Error signing in with GitHub:', error);
+  }
+};
+
+export const githubLogout = async () => {
+  try {
+    await signout();
+  } catch (error) {
+    console.error('Error signing out:', error);
+  }
+};
+
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
 
 // Definição das chaves de cache
