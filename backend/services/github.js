@@ -136,9 +136,6 @@ class GithubAPI {
 
 	// Função de correção para garantir que username seja uma string válida
 	async getUser(username) {
-		console.log('Tipo de username:', typeof username); // Tipo de dados do username
-		console.log('Valor de username:', username); // Valor de username
-
 		// Verifica se username é uma string
 		if (typeof username !== 'string' || username.trim() === '') {
 			throw new Error('O username fornecido é inválido.');
@@ -146,13 +143,9 @@ class GithubAPI {
 
 		// Verifica se username é um objeto e tenta extrair a string
 		if (typeof username === 'object') {
-			console.log(
-				'username parece ser um objeto, tentando extrair o valor correto...'
-			);
 			// Tente acessar a propriedade correta dependendo da estrutura do objeto
 			if (username && (username.username || username.name)) {
 				username = username.username || username.name; // Extrai o valor adequado
-				console.log('Extraído username:', username);
 			} else {
 				throw new Error('O objeto username não contém uma propriedade válida.');
 			}
