@@ -4,13 +4,12 @@ import passport from 'passport';
 const router = express.Router();
 
 // Envio do Formulário
-
-app.get(
+router.get(
 	'/auth/github',
 	passport.authenticate('github', { scope: ['user:email'] })
 );
 
-app.get(
+router.get(
 	'/auth/github/callback',
 	passport.authenticate('github', { failureRedirect: '/login' }),
 	function (req, res) {
