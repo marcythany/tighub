@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useContext } from 'react';
+import { useNavigate } from 'react-router-dom'; // Para navegação entre páginas
 import toast from 'react-hot-toast';
-import githubAPI from '../api/github';
 
+import { AuthContext } from '../context/AuthContext'; // Para pegar o authUser
 import Search from '../components/Search';
 import SortRepos from '../components/SortRepos';
 import ProfileInfo from '../components/ProfileInfo';
@@ -9,64 +10,72 @@ import Repos from '../components/Repos';
 import Spinner from '../components/Spinner';
 
 const HomePage = () => {
+  const { authUser } = useContext(AuthContext); // Pegando o authUser
+  const navigate = useNavigate(); // Hook para navegação
   const [userProfile, setUserProfile] = useState(null);
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sortType, setSortType] = useState('recent');
 
-  const getUserProfileAndRepos = useCallback(
-    async (username = 'marcythany') => {
-      setLoading(true);
-      try {
-        const res = await fetch(
-          `http://localhost:5000/api/users/profile/${username}`,
-        );
+  const getUserProfileAndRepos = useCallback(async (username) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/users/profile/${username}`);
 
-        if (!res.ok) {
-          throw new Error('Erro ao buscar dados do GitHub');
-        }
-
-        const data = await res.json();
-        const { repos, userProfile } = data;
-
-        if (!Array.isArray(repos)) {
-          console.error('Repos não é um array:', repos);
-          throw new Error('A resposta da API não contém repositórios válidos');
-        }
-
-        setUserProfile(userProfile);
-
-        // Mantendo a ordenação padrão por data de criação
-        const sortedRepos = [...repos].sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at),
-        );
-
-        setRepos(sortedRepos);
-
-        return { userProfile, repos: sortedRepos };
-      } catch (error) {
-        console.error('Erro ao buscar dados do GitHub:', error);
-        toast.error(error.message || 'Erro ao buscar dados do GitHub');
-        return { userProfile: null, repos: [] };
-      } finally {
-        setLoading(false);
+      if (!res.ok) {
+        throw new Error('Erro ao buscar dados do GitHub');
       }
-    },
-    [],
-  );
+
+      const data = await res.json();
+      const { repos, userProfile } = data;
+
+      if (!Array.isArray(repos)) {
+        console.error('Repos não é um array:', repos);
+        throw new Error('A resposta da API não contém repositórios válidos');
+      }
+
+      setUserProfile(userProfile);
+
+      // Mantendo a ordenação padrão por data de criação
+      const sortedRepos = [...repos].sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at),
+      );
+
+      setRepos(sortedRepos);
+
+      return { userProfile, repos: sortedRepos };
+    } catch (error) {
+      console.error('Erro ao buscar dados do GitHub:', error);
+      toast.error(error.message || 'Erro ao buscar dados do GitHub');
+      return { userProfile: null, repos: [] };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    getUserProfileAndRepos();
-  }, [getUserProfileAndRepos]);
+    if (authUser) {
+      // Se o usuário estiver autenticado, usamos o username do authUser
+      const username = authUser.username || authUser.name;
+      if (username) {
+        getUserProfileAndRepos(username);
+      } else {
+        toast.error('Usuário não autenticado corretamente');
+      }
+    } else {
+      // Se não estiver autenticado, redireciona para o perfil
+      navigate('/profile');
+    }
+  }, [authUser, navigate, getUserProfileAndRepos]);
 
   const onSearch = async (e, username) => {
     e.preventDefault();
 
-    try {
-      setLoading(true);
-      setRepos([]);
-      setUserProfile(null);
+    setLoading(true);
+    setRepos([]);
+    setUserProfile(null);
 
+    try {
       const { userProfile, repos } = await getUserProfileAndRepos(username);
 
       if (userProfile) setUserProfile(userProfile);
