@@ -5,7 +5,7 @@ import passport from 'passport';
 import session from 'express-session';
 import path from 'path';
 
-import './passport/githubAuth.js'; // Importe a configuração do Passport
+import { authRoutes, signin, signout } from './auth/Auth.js';
 
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';

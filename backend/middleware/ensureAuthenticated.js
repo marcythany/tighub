@@ -1,6 +1,7 @@
-export async function ensureAuthenticated(req, res, next) {
-	if (req.isAuthenticated()) {
-		return next();
-	}
-	res.redirect(process.env.CLIENT_BASE_URL + '/login');
-}
+import { ensureAuthenticated } from '@auth/express';
+
+// Protected route
+app.get('/protected', ensureAuthenticated, (req, res) => {
+	// Access the authenticated user through req.user
+	res.send(`Welcome, ${req.user.name}!`);
+});
