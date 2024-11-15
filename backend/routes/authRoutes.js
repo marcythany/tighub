@@ -1,3 +1,4 @@
+import express from 'express';
 import { signin, signout } from '../auth/Auth.js';
 
 const router = express.Router();
