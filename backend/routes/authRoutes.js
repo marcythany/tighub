@@ -3,9 +3,9 @@ import { signin, signout } from '../auth/Auth.js';
 
 const router = express.Router();
 
-router.get('/auth/github', signin('github'));
+router.get('/auth/github', signin);
 
-router.get('/auth/github/callback', signin('github'));
+router.get('/auth/github/callback', signin);
 
 router.get('/check', (req, res) => {
 	if (req.session.user) {
