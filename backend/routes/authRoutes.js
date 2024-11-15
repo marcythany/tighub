@@ -5,21 +5,17 @@ const router = express.Router();
 
 // Envio do Formulário
 
-router.get(
-	'/github',
-	passport.authenticate('github', { scope: ['user:email'] }),
-	function (req, res) {
-		// The request will be redirected to GitHub for authentication, so this
-		// function will not be called.
-	}
+app.get(
+	'/auth/github',
+	passport.authenticate('github', { scope: ['user:email'] })
 );
-router.get(
-	'/github/callback',
-	passport.authenticate('github', {
-		failureRedirect: process.env.CLIENT_BASE_URL + '/login',
-	}),
+
+app.get(
+	'/auth/github/callback',
+	passport.authenticate('github', { failureRedirect: '/login' }),
 	function (req, res) {
-		res.redirect(process.env.CLIENT_BASE_URL);
+		// Successful authentication, redirect home.
+		res.redirect('/');
 	}
 );
 
