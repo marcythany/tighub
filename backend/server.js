@@ -31,7 +31,7 @@ app.use(passport.session());
 // CORS - permitir que o frontend acesse o backend
 app.use(
 	cors({
-		origin: 'https://tighub.vercel.app', // Ajuste conforme seu frontend
+		origin: 'https://tighub.onrender.com', // Ajuste conforme seu frontend
 		methods: ['GET', 'POST', 'PUT', 'DELETE'],
 		credentials: true,
 	})
