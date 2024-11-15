@@ -12,7 +12,7 @@ const LikeProfile = ({ userProfile }) => {
   useEffect(() => {
     const fetchLikedProfiles = async () => {
       try {
-        const res = await fetch('/api/users/likes', {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/likes`, {
           method: 'GET',
           credentials: 'include',
         });

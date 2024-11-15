@@ -20,7 +20,9 @@ const HomePage = () => {
   const getUserProfileAndRepos = useCallback(async (username) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/users/profile/${username}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/users/profile/${username}`,
+      );
 
       if (!res.ok) {
         throw new Error('Erro ao buscar dados do GitHub');

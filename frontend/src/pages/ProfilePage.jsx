@@ -12,7 +12,7 @@ const ProfilePage = () => {
   // Função que faz a requisição para pegar o perfil do usuário
   const fetchUserProfile = async (username) => {
     try {
-      const res = await fetch(`/api/users/profile/${username}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/profile/${username}`, {
         credentials: 'include', // Garantir que o cookie da sessão é enviado
       });
 

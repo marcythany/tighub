@@ -17,7 +17,7 @@ const ExplorePage = () => {
     try {
       // Faz a chamada para a API do seu backend, que irá buscar os repositórios
       const res = await fetch(
-        `http://localhost:5000/api/explore/repos/${language}`,
+        `${import.meta.env.VITE_API_URL}/api/explore/repos/${language}`,
       );
 
       if (!res.ok) {
