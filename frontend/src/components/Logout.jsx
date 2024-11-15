@@ -1,8 +1,8 @@
-import { useAuthContext } from '../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import { signOut } from 'next-auth/react';
 
 const Logout = () => {
-  const { user } = useAuthContext();
+  const { user } = AuthContext();
 
   const handleLogout = async () => {
     try {
