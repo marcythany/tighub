@@ -8,10 +8,15 @@ import { FaXTwitter } from 'react-icons/fa6';
 import { TfiThought } from 'react-icons/tfi';
 import { FaEye } from 'react-icons/fa';
 import { formatMemberSince } from '../utils/functions';
-import LikeProfile from './LikeProfile';
+import LikeProfile from './LikeProfile'; // Importe o componente de LikeProfile
+import { useAuthContext } from '../context/AuthContext';
 
-const ProfileInfo = ({ userProfile }) => {
+const ProfileInfo = ({ userProfile, likedProfiles }) => {
+  const { authUser } = useAuthContext(); // Obtendo o estado do usuário autenticado
   const memberSince = formatMemberSince(userProfile?.created_at);
+
+  // Verificando se o usuário logado é o mesmo do perfil exibido
+  const isOwnProfile = authUser?.username === userProfile?.login;
 
   return (
     <div className="flex w-full flex-col gap-2 md:top-10 lg:sticky lg:w-1/3">
@@ -22,13 +27,20 @@ const ProfileInfo = ({ userProfile }) => {
             <img
               src={userProfile?.avatar_url}
               className="mb-2 h-24 w-24 rounded-md"
-              alt=""
+              alt="Avatar do usuário"
             />
           </a>
-          {/* View on Github */}
 
+          {/* View on Github */}
           <div className="flex flex-col items-center gap-2">
-            <LikeProfile userProfile={userProfile} />
+            {/* Exibe o componente de LikeProfile apenas se não for o próprio perfil */}
+            {!isOwnProfile && (
+              <LikeProfile
+                userProfile={userProfile}
+                likedProfiles={likedProfiles}
+              />
+            )}
+
             <a
               href={userProfile?.html_url}
               target="_blank"
@@ -36,29 +48,42 @@ const ProfileInfo = ({ userProfile }) => {
               className="bg-glass flex w-full cursor-pointer items-center gap-2 rounded-md border border-blue-400 p-2 text-xs font-medium"
             >
               <FaEye size={16} />
-              Veja no github
+              Veja no Github
             </a>
+
+            {/* Editar Perfil aparece somente se for o perfil do usuário logado */}
+            {isOwnProfile && (
+              <a
+                href="https://github.com/settings/profile"
+                target="_blank"
+                rel="noreferrer"
+                className="bg-glass mt-2 flex w-full cursor-pointer items-center gap-2 rounded-md border border-blue-400 p-2 text-xs font-medium"
+              >
+                <FaEye size={16} />
+                Editar Perfil
+              </a>
+            )}
           </div>
         </div>
 
         {/* User Bio */}
-        {userProfile?.bio ? (
+        {userProfile?.bio && (
           <div className="flex items-center gap-2">
             <TfiThought />
             <p className="text-sm">{userProfile?.bio.substring(0, 60)}...</p>
           </div>
-        ) : null}
+        )}
 
         {/* Location */}
-        {userProfile?.location ? (
+        {userProfile?.location && (
           <div className="flex items-center gap-2">
             <IoLocationOutline />
             {userProfile?.location}
           </div>
-        ) : null}
+        )}
 
         {/* Twitter Username */}
-        {userProfile?.twitter_username ? (
+        {userProfile?.twitter_username && (
           <a
             href={`https://twitter.com/${userProfile.twitter_username}`}
             target="_blank"
@@ -68,7 +93,7 @@ const ProfileInfo = ({ userProfile }) => {
             <FaXTwitter />
             {userProfile?.twitter_username}
           </a>
-        ) : null}
+        )}
 
         {/* Member Since Date */}
         <div className="my-2">
@@ -127,4 +152,5 @@ const ProfileInfo = ({ userProfile }) => {
     </div>
   );
 };
+
 export default ProfileInfo;
