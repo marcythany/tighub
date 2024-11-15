@@ -5,7 +5,9 @@
 	"description": "TigHub é um estudo de clone do GitHub, uma plataforma para hospedar e compartilhar repositórios de código-fonte. Este projeto foi criado para fornecer uma interface simples e intuitiva para gerenciar repositórios, perfis de usuários e muito mais.",
 	"main": "server.js",
 	"scripts": {
-		"dev": "nodemon backend/server.js"
+		"dev": "nodemon backend/server.js",
+		"build": "bun i && bun i --prefix frontend && bun run build --prefix frontend",
+		"start": "node backend/server.js"
 	},
 	"keywords": [],
 	"author": "",
