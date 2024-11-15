@@ -1,16 +1,12 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import passport from 'passport';
-import session from 'express-session';
 import path from 'path';
 
-import { authRoutes, signin, signout } from './auth/Auth.js';
-
-import authRoutes from './routes/authRoutes.js';
+import { authRoutes } from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import exploreRoutes from './routes/exploreRoutes.js';
-import ConnectDB from './db/connectDB.js'; // Conectar ao banco de dados
+import ConnectDB from './db/connectDB.js';
 
 dotenv.config();
 
@@ -19,19 +15,15 @@ const PORT = process.env.PORT || 5000;
 
 const __dirname = path.resolve();
 
-// Middleware para sessões
+// Middleware for sessions
 app.use(
 	session({ secret: 'keyboard cat', resave: false, saveUninitialized: false })
 );
 
-// Inicialização do Passport
-app.use(passport.initialize());
-app.use(passport.session());
-
-// CORS - permitir que o frontend acesse o backend
+// CORS - allow frontend to access the backend
 app.use(
 	cors({
-		origin: 'https://tighub.onrender.com', // Ajuste conforme seu frontend
+		origin: 'https://tighub.onrender.com', // Adjust according to your frontend
 		methods: ['GET', 'POST', 'PUT', 'DELETE'],
 		credentials: true,
 	})

@@ -1,4 +1,4 @@
-import { signin, signout } from '../auth/Auth.js';
+import { signin, signout } from './auth.js';
 
 const router = express.Router();
 
@@ -17,7 +17,6 @@ router.get('/check', (req, res) => {
 router.get(
 	'/logout',
 	signout((req) => {
-		// Perform any additional logout logic here
 		req.session.destroy((err) => {
 			res.json({ message: 'Logged out' });
 		});
