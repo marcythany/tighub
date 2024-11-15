@@ -11,5 +11,8 @@ export default defineConfig({
         target: 'https://tighub.onrender.com',
       },
     },
+    build: {
+      outDir: 'dist',
+    },
   },
 });
