@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import passport from 'passport';
 import session from 'express-session';
+import path from 'path';
 
 import './passport/githubAuth.js'; // Importe a configuração do Passport
 
@@ -14,6 +15,8 @@ import ConnectDB from './db/connectDB.js'; // Conectar ao banco de dados
 dotenv.config();
 
 const app = express();
+
+const __dirname = path.resolve();
 
 // Middleware para sessões
 app.use(
@@ -40,6 +43,13 @@ app.get('', async (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/explore/', exploreRoutes);
+
+if (process.env.NODE_ENV === 'production') {
+	app.use(express.static(path.join(__dirname, '/frontend/dist')));
+	app.get('*', (req, res) => {
+		res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
+	});
+}
 
 // Conectar ao banco de dados na inicialização
 ConnectDB();
