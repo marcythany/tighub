@@ -8,11 +8,11 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ExplorePage from './pages/ExplorePage';
 import LikesPage from './pages/LikesPage';
+import ProfilePage from './pages/ProfilePage';
 import { useAuthContext } from './context/AuthContext';
 
 function App() {
   const { authUser, loading } = useAuthContext();
-  console.log('Usuário Autenticado:', authUser);
 
   if (loading) return null;
 
@@ -38,6 +38,10 @@ function App() {
             <Route
               path="/likes"
               element={authUser ? <LikesPage /> : <Navigate to={'/login'} />}
+            />
+            <Route
+              path="/profile"
+              element={authUser ? <ProfilePage /> : <Navigate to={'/login'} />}
             />
           </Routes>
           <Toaster />
