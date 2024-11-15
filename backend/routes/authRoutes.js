@@ -11,10 +11,12 @@ router.get(
 
 router.get(
 	'/auth/github/callback',
-	passport.authenticate('github', { failureRedirect: '/login' }),
+	passport.authenticate('github', {
+		failureRedirect: `${process.env.CLIENT_BASE_URL}/login`,
+	}),
 	function (req, res) {
 		// Successful authentication, redirect home.
-		res.redirect('/');
+		res.redirect(`${process.env.CLIENT_BASE_URL}/`);
 	}
 );
 
