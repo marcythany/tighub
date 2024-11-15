@@ -1,9 +1,9 @@
 import { MdLogout } from 'react-icons/md';
 import { useAuthContext } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
+import { Link } from 'react-router-dom'; // Importa o Link
 
 const Logout = () => {
-  // Desestruture authUser e setAuthUser diretamente no componente
   const { authUser, setAuthUser } = useAuthContext();
 
   const handleLogout = async () => {
@@ -19,11 +19,14 @@ const Logout = () => {
 
   return (
     <>
-      <img
-        src={authUser?.avatarUrl}
-        className="h-10 w-10 rounded-full border border-gray-800"
-        alt="User Avatar"
-      />
+      {/* Link envolvê a imagem do usuário */}
+      <Link to="/profile">
+        <img
+          src={authUser?.avatarUrl}
+          className="h-10 w-10 rounded-full border border-gray-800"
+          alt="User Avatar"
+        />
+      </Link>
 
       <div
         className="bg-glass mt-auto flex cursor-pointer items-center rounded-lg border border-gray-800 p-2"
