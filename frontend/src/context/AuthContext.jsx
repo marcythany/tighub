@@ -3,8 +3,13 @@ import { useSession } from 'next-auth/react';
 
 export const AuthContext = createContext();
 
+export const useAuthContext = () => {
+  return useContext(AuthContext);
+};
+
 export const AuthProvider = ({ children }) => {
   const { data: session, status } = useSession();
+  const [authUser, setAuthUser] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(status === 'loading');
 
@@ -14,7 +19,7 @@ export const AuthProvider = ({ children }) => {
   }, [session, status]);
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ authUser, setAuthUser, loading, user }}>
       {children}
     </AuthContext.Provider>
   );
