@@ -1,4 +1,4 @@
-import { signin, signout } from './auth.js';
+import { signin, signout } from '../auth/Auth.js';
 
 const router = express.Router();
 
