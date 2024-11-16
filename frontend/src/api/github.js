@@ -1,21 +1,3 @@
-import { signIn } from 'next-auth/react';
-
-export const githubLogin = async () => {
-  try {
-    await signIn('github');
-  } catch (error) {
-    console.error('Error signing in with GitHub:', error);
-  }
-};
-
-export const githubLogout = async () => {
-  try {
-    await signOut();
-  } catch (error) {
-    console.error('Error signing out:', error);
-  }
-};
-
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
 
 // Definição das chaves de cache

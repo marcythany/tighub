@@ -3,6 +3,8 @@ import toast from 'react-hot-toast';
 import { useAuthContext } from '../context/AuthContext';
 import { useState, useEffect } from 'react';
 
+import { API_URL } from '../lib/functions';
+
 const LikeProfile = ({ userProfile }) => {
   const { authUser } = useAuthContext();
   const [liked, setLiked] = useState(false);
@@ -12,7 +14,7 @@ const LikeProfile = ({ userProfile }) => {
   useEffect(() => {
     const fetchLikedProfiles = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/likes`, {
+        const res = await fetch(`/api/users/likes`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -36,10 +38,13 @@ const LikeProfile = ({ userProfile }) => {
 
   const handleLikeProfile = async () => {
     try {
-      const res = await fetch(`/api/users/like/${userProfile.login}`, {
-        method: 'POST',
-        credentials: 'include',
-      });
+      const res = await fetch(
+        `${API_URL}/api/users/like/${userProfile.login}`,
+        {
+          method: 'POST',
+          credentials: 'include',
+        },
+      );
       const data = await res.json();
 
       if (data.error) throw new Error(data.error);

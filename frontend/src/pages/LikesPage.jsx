@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { FaHeart } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import { formatDate } from '../utils/functions';
+import { API_URL } from '../lib/functions';
 
 const LikesPage = () => {
   const [likes, setLikes] = useState([]);
@@ -9,7 +10,9 @@ const LikesPage = () => {
   useEffect(() => {
     const getLikes = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/likes`, { credentials: 'include' });
+        const res = await fetch(`/api/users/likes`, {
+          credentials: 'include',
+        });
         const data = await res.json();
 
         if (data.error) throw new Error(data.error);

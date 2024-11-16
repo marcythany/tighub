@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import Spinner from '../components/Spinner';
 import Repos from '../components/Repos';
 import IconComponent, { TECH_ICONS } from '../components/IconComponent';
+import { API_URL } from '../lib/functions';
 
 const ExplorePage = () => {
   const [loading, setLoading] = useState(false);
@@ -16,9 +17,7 @@ const ExplorePage = () => {
 
     try {
       // Faz a chamada para a API do seu backend, que irá buscar os repositórios
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/explore/repos/${language}`,
-      );
+      const res = await fetch(`/api/explore/repos/${language}`);
 
       if (!res.ok) {
         throw new Error('Erro ao buscar repositórios');

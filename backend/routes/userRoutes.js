@@ -1,15 +1,14 @@
 import express from 'express';
 import {
+	getLikes,
 	getUserProfileAndRepos,
 	likeProfile,
-	getLikes,
-	getUserProfile,
 } from '../controllers/userController.js';
-import ensureAuthenticated from '../routes/protected-route.js';
+import { ensureAuthenticated } from '../middleware/ensureAuthenticated.js';
 
 const router = express.Router();
 
-router.get('/profile', ensureAuthenticated, getUserProfile);
+router.get('/profile', getUserProfileAndRepos);
 router.get('/profile/:username', getUserProfileAndRepos);
 
 router.get('/likes', ensureAuthenticated, getLikes);

@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext'; // Supondo que o AuthContext forneça o authUser
 import toast from 'react-hot-toast';
 import ProfileInfo from '../components/ProfileInfo';
+import { API_URL } from '../lib/functions';
 
 const ProfilePage = () => {
   const { authUser } = useContext(AuthContext); // Pega o authUser do contexto
@@ -12,7 +13,7 @@ const ProfilePage = () => {
   // Função que faz a requisição para pegar o perfil do usuário
   const fetchUserProfile = async (username) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/profile/${username}`, {
+      const res = await fetch(`/api/users/profile/${username}`, {
         credentials: 'include', // Garantir que o cookie da sessão é enviado
       });
 
