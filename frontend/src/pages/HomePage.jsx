@@ -1,74 +1,41 @@
-import { useState, useEffect, useCallback, useContext } from 'react';
-import { useNavigate } from 'react-router-dom'; // Para navegação entre páginas
+import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
-import { AuthContext } from '../context/AuthContext'; // Para pegar o authUser
-import Search from '../components/Search';
-import SortRepos from '../components/SortRepos';
 import ProfileInfo from '../components/ProfileInfo';
 import Repos from '../components/Repos';
+import Search from '../components/Search';
+import SortRepos from '../components/SortRepos';
 import Spinner from '../components/Spinner';
 
-import { API_URL } from '../lib/functions';
-
 const HomePage = () => {
-  const { authUser } = useContext(AuthContext); // Pegando o authUser
-  const navigate = useNavigate(); // Hook para navegação
   const [userProfile, setUserProfile] = useState(null);
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
+
   const [sortType, setSortType] = useState('recent');
 
   const getUserProfileAndRepos = useCallback(async (username) => {
     setLoading(true);
     try {
       const res = await fetch(`/api/users/profile/${username}`);
+      const { repos, userProfile } = await res.json();
 
-      if (!res.ok) {
-        throw new Error('Erro ao buscar dados do GitHub');
-      }
+      repos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); //descending, recent first
 
-      const data = await res.json();
-      const { repos, userProfile } = data;
-
-      if (!Array.isArray(repos)) {
-        console.error('Repos não é um array:', repos);
-        throw new Error('A resposta da API não contém repositórios válidos');
-      }
-
+      setRepos(repos);
       setUserProfile(userProfile);
 
-      // Mantendo a ordenação padrão por data de criação
-      const sortedRepos = [...repos].sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at),
-      );
-
-      setRepos(sortedRepos);
-
-      return { userProfile, repos: sortedRepos };
+      return { userProfile, repos };
     } catch (error) {
-      console.error('Erro ao buscar dados do GitHub:', error);
-      toast.error(error.message || 'Erro ao buscar dados do GitHub');
-      return { userProfile: null, repos: [] };
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    if (authUser) {
-      // Se o usuário estiver autenticado, usamos o username do authUser
-      const username = authUser.username || authUser.name;
-      if (username) {
-        getUserProfileAndRepos(username);
-      } else {
-        toast.error('Usuário não autenticado corretamente');
-      }
-    } else {
-      // Se não estiver autenticado, redireciona para o perfil
-      navigate('/profile');
-    }
-  }, [authUser, navigate, getUserProfileAndRepos]);
+    getUserProfileAndRepos();
+  }, [getUserProfileAndRepos]);
 
   const onSearch = async (e, username) => {
     e.preventDefault();
@@ -77,33 +44,24 @@ const HomePage = () => {
     setRepos([]);
     setUserProfile(null);
 
-    try {
-      const { userProfile, repos } = await getUserProfileAndRepos(username);
+    const { userProfile, repos } = await getUserProfileAndRepos(username);
 
-      if (userProfile) setUserProfile(userProfile);
-      if (repos) setRepos(repos);
-    } catch (error) {
-      toast.error('Erro ao buscar usuário');
-    } finally {
-      setLoading(false);
-    }
+    setUserProfile(userProfile);
+    setRepos(repos);
+    setLoading(false);
+    setSortType('recent');
   };
 
   const onSort = (sortType) => {
-    const sortedRepos = [...repos];
-
     if (sortType === 'recent') {
-      sortedRepos.sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at),
-      );
+      repos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); //descending, recent first
     } else if (sortType === 'stars') {
-      sortedRepos.sort((a, b) => b.stargazers_count - a.stargazers_count);
+      repos.sort((a, b) => b.stargazers_count - a.stargazers_count); //descending, most stars first
     } else if (sortType === 'forks') {
-      sortedRepos.sort((a, b) => b.forks_count - a.forks_count);
+      repos.sort((a, b) => b.forks_count - a.forks_count); //descending, most forks first
     }
-
     setSortType(sortType);
-    setRepos(sortedRepos);
+    setRepos([...repos]);
   };
 
   return (
@@ -112,11 +70,11 @@ const HomePage = () => {
       {repos.length > 0 && <SortRepos onSort={onSort} sortType={sortType} />}
       <div className="flex flex-col items-start justify-center gap-4 lg:flex-row">
         {userProfile && !loading && <ProfileInfo userProfile={userProfile} />}
-        {repos.length > 0 && !loading && <Repos repos={repos} />}
+
+        {!loading && <Repos repos={repos} />}
         {loading && <Spinner />}
       </div>
     </div>
   );
 };
-
 export default HomePage;
