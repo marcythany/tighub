@@ -63,6 +63,7 @@ const IconComponent = ({
   nameClassName = '',
   containerClassName = '',
 }) => {
+  // Verifica se a tecnologia existe no objeto TECH_ICONS
   const tech = TECH_ICONS[name];
 
   if (!tech) {
@@ -99,34 +100,6 @@ const IconComponent = ({
   }
 
   return iconElement;
-};
-
-// Componente para grupo de ícones
-export const IconGroup = ({
-  icons = [], // Verificando se é um array válido
-  size = 24,
-  showNames = false,
-  className = '',
-  containerClassName = '',
-}) => {
-  if (!Array.isArray(icons)) {
-    console.error('O parâmetro "icons" deve ser um array.');
-    return null;
-  }
-
-  return (
-    <div className={`flex flex-wrap gap-4 ${containerClassName}`}>
-      {icons.map((name) => (
-        <IconComponent
-          key={name}
-          name={name}
-          size={size}
-          showName={showNames}
-          className={className}
-        />
-      ))}
-    </div>
-  );
 };
 
 export default IconComponent;
