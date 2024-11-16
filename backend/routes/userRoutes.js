@@ -5,7 +5,7 @@ import {
 	getLikes,
 	getUserProfile,
 } from '../controllers/userController.js';
-import { ensureAuthenticated } from '../middleware/ensureAuthenticated.js';
+import ensureAuthenticated from '../routes/protected-route.js';
 
 const router = express.Router();
 
