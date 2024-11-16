@@ -8,6 +8,7 @@ import Search from '../components/Search';
 import SortRepos from '../components/SortRepos';
 import Spinner from '../components/Spinner';
 import { useAuthContext } from '../context/AuthContext';
+import LoginPage from './LoginPage';
 
 const HomePage = () => {
   const { authUser, loading: authLoading } = useAuthContext(); // Pegando o usuário autenticado
