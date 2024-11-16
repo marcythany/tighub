@@ -1,145 +1,68 @@
-import githubAPI from '../services/github.js';
-import User from '../models/userModels.js';
-import connectionMongoDB from '../db/connectDB.js';
+import User from '../userModels.js';
 
-const handleError = (res, message, error) => {
-	console.error(message, error);
-	return res.status(500).json({ error: message });
-};
-
-// Função para criar ou buscar um usuário pelo username
-const getOrCreateUserByUsername = async (username) => {
-	let userToLike = await User.findOne({ username });
-
-	if (!userToLike) {
-		const userProfileFromAPI = await githubAPI.getUser(username);
-
-		if (!userProfileFromAPI || !userProfileFromAPI.login) {
-			throw new Error('Usuário não encontrado na API ou sem username.');
-		}
-
-		userToLike = new User({
-			username: userProfileFromAPI.login,
-			name: userProfileFromAPI.name,
-			profileUrl: userProfileFromAPI.html_url,
-			avatarUrl: userProfileFromAPI.avatar_url,
-			likedProfiles: [],
-			likedBy: [],
-		});
-
-		await userToLike.save();
-	}
-
-	return userToLike;
-};
-
-// Função para curtir ou remover like de um perfil
-export const likeProfile = async (req, res) => {
-	const { username } = req.params;
-
-	try {
-		await connectionMongoDB();
-
-		const user = await User.findById(req.user._id.toString());
-		let userToLike = await getOrCreateUserByUsername(username);
-
-		const isLiked = user.likedProfiles.includes(userToLike.username);
-
-		// Operação de curtir ou remover like
-		if (isLiked) {
-			user.likedProfiles = user.likedProfiles.filter(
-				(likedUsername) => likedUsername !== userToLike.username
-			);
-			userToLike.likedBy = userToLike.likedBy.filter(
-				(liker) => liker.username !== user.username
-			);
-		} else {
-			userToLike.likedBy.push({
-				username: user.username,
-				avatarUrl: user.avatarUrl,
-				likedDate: Date.now(),
-			});
-			user.likedProfiles.push(userToLike.username);
-		}
-
-		// Salvando as alterações
-		await userToLike.save();
-		await user.save();
-
-		res.status(200).json({
-			message: isLiked ? 'Like removido!' : 'Usuário curtido!',
-		});
-	} catch (error) {
-		handleError(res, 'Erro ao processar o like:', error);
-	}
-};
-
-// Função para pegar os perfis curtidos
-export const getLikes = async (req, res) => {
-	try {
-		const user = await User.findById(req.user._id.toString());
-
-		const { page = 1, limit = 10 } = req.query;
-
-		const likedProfiles = await Promise.all(
-			user.likedProfiles.map(async (username) => {
-				const likedUser = await User.findOne({ username });
-				if (likedUser) {
-					likedUser.likedDate = likedUser.likedBy.find(
-						(liker) => liker.username === user.username
-					)?.likedDate;
-					return likedUser;
-				}
-				return null;
-			})
-		);
-
-		const filteredLikedProfiles = likedProfiles.filter(Boolean);
-
-		res
-			.status(200)
-			.json({ likedProfiles: filteredLikedProfiles, likedBy: user.likedBy });
-	} catch (error) {
-		handleError(res, 'Erro ao buscar likes:', error);
-	}
-};
-
-// Função para pegar o perfil e repositórios de um usuário
 export const getUserProfileAndRepos = async (req, res) => {
 	const { username } = req.params;
-
 	try {
-		await connectionMongoDB();
+		// 60 requests per hour, 5000 requests per hour for authenticated requests
+		// https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28
+		const userRes = await fetch(`https://api.github.com/users/${username}`, {
+			headers: {
+				authorization: `token ${process.env.GITHUB_API_KEY}`,
+			},
+		});
 
-		const userProfile = await githubAPI.getUser(username);
-		if (!userProfile) {
-			return res.status(404).json({ error: 'Usuário não encontrado na API.' });
-		}
+		const userProfile = await userRes.json();
 
-		const repos = await githubAPI.getUserRepositories(username);
+		const repoRes = await fetch(userProfile.repos_url, {
+			headers: {
+				authorization: `token ${process.env.GITHUB_API_KEY}`,
+			},
+		});
+		const repos = await repoRes.json();
 
 		res.status(200).json({ userProfile, repos });
 	} catch (error) {
-		handleError(res, 'Erro ao buscar dados do GitHub:', error);
+		res.status(500).json({ error: error.message });
 	}
 };
 
-// Função para pegar o perfil do usuário autenticado
-export const getUserProfile = async (req, res) => {
+export const likeProfile = async (req, res) => {
 	try {
-		await connectionMongoDB();
-
+		const { username } = req.params;
 		const user = await User.findById(req.user._id.toString());
+		console.log(user, 'auth user');
+		const userToLike = await User.findOne({ username });
 
-		if (!user) {
-			return res.status(404).json({ error: 'Usuário não encontrado' });
+		if (!userToLike) {
+			return res.status(404).json({ error: 'User is not a member' });
 		}
 
-		// Remove dados sensíveis
-		const { password, ...userData } = user.toObject();
+		if (user.likedProfiles.includes(userToLike.username)) {
+			return res.status(400).json({ error: 'User already liked' });
+		}
 
-		res.status(200).json(userData);
+		userToLike.likedBy.push({
+			username: user.username,
+			avatarUrl: user.avatarUrl,
+			likedDate: Date.now(),
+		});
+		user.likedProfiles.push(userToLike.username);
+
+		// await userToLike.save();
+		// await user.save();
+		await Promise.all([userToLike.save(), user.save()]);
+
+		res.status(200).json({ message: 'User liked' });
 	} catch (error) {
-		handleError(res, 'Erro ao buscar o perfil do usuário', error);
+		res.status(500).json({ error: error.message });
+	}
+};
+
+export const getLikes = async (req, res) => {
+	try {
+		const user = await User.findById(req.user._id.toString());
+		res.status(200).json({ likedBy: user.likedBy });
+	} catch (error) {
+		res.status(500).json({ error: error.message });
 	}
 };
