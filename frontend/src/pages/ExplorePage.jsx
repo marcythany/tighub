@@ -37,10 +37,16 @@ const ExplorePage = () => {
       }
 
       // Adiciona os ícones aos repositórios
-      const reposWithIcons = data.map((repo) => ({
-        ...repo,
-        techIcon: repo.language ? TECH_ICONS[repo.language] : null,
-      }));
+      const reposWithIcons = data.map((repo) => {
+        const tech = repo.language ? repo.language.trim() : '';
+        const formattedTech = tech.charAt(0).toUpperCase() + tech.slice(1); // Capitaliza a primeira letra
+        return {
+          ...repo,
+          techIcon: TECH_ICONS[formattedTech]
+            ? TECH_ICONS[formattedTech].icon
+            : null, // Usa o ícone se encontrado
+        };
+      });
 
       setRepos(reposWithIcons);
       setSelectedLanguage(language); // Define a linguagem selecionada
