@@ -10,33 +10,36 @@ const ExplorePage = () => {
   const [selected, setSelected] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState('');
 
+  // Função para buscar repositórios populares de uma linguagem específica
   const exploreRepos = async (language) => {
+    if (!language) {
+      toast.error('Nenhuma linguagem especificada.');
+      return;
+    }
+
     setLoading(true);
-    setRepos([]); // Limpa os repositórios ao iniciar a nova busca
+    setRepos([]); // Limpa os repositórios ao iniciar uma nova busca
 
     try {
-      // Faz a chamada para a API do seu backend, que irá buscar os repositórios
+      // Faz a chamada para a API do backend
       const res = await fetch(`/api/explore/repos/${language}`);
 
       if (!res.ok) {
-        throw new Error('Erro ao buscar repositórios');
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Erro ao buscar repositórios');
       }
 
       const result = await res.json();
-      console.log('Resposta da API:', result); // Verifique a resposta no console
+      console.log('Resposta da API:', result);
 
-      // A resposta agora está sob a chave 'repos', então vamos usá-la diretamente
       const data = result.repos;
 
-      // Verifica se os repositórios foram encontrados e se são válidos
-      if (
-        !Array.isArray(data) ||
-        !data.every((repo) => repo.id && repo.name && repo.language)
-      ) {
-        throw new Error('A resposta da API não contém repositórios válidos');
+      // Valida a resposta recebida da API
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new Error('Nenhum repositório encontrado.');
       }
 
-      // Adiciona os ícones aos repositórios
+      // Adiciona os ícones aos repositórios com base na linguagem
       const reposWithIcons = data.map((repo) => {
         const tech = repo.language ? repo.language.trim() : '';
         const formattedTech = tech.charAt(0).toUpperCase() + tech.slice(1); // Capitaliza a primeira letra
@@ -44,7 +47,7 @@ const ExplorePage = () => {
           ...repo,
           techIcon: TECH_ICONS[formattedTech]
             ? TECH_ICONS[formattedTech].icon
-            : null, // Usa o ícone se encontrado
+            : null,
         };
       });
 
@@ -58,12 +61,18 @@ const ExplorePage = () => {
     }
   };
 
+  // Função para selecionar uma tecnologia e buscar repositórios
   const onSelect = (tech) => {
+    if (!tech) {
+      toast.error('Tecnologia selecionada não é válida.');
+      return;
+    }
+
     setSelected(tech);
     exploreRepos(tech.toLowerCase()); // Chama a API para a linguagem selecionada
   };
 
-  // Função para atualizar os repositórios atuais
+  // Função para atualizar os repositórios da linguagem atual
   const refreshCurrentLanguage = async () => {
     if (selectedLanguage) {
       await exploreRepos(selectedLanguage); // Refaz a busca com a linguagem atual
