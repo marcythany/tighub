@@ -1,17 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 import ProfileInfo from '../components/ProfileInfo';
 import Repos from '../components/Repos';
 import Search from '../components/Search';
 import SortRepos from '../components/SortRepos';
 import Spinner from '../components/Spinner';
+import { useAuthContext } from '../context/AuthContext';
 
 const HomePage = () => {
+  const { authUser, loading: authLoading } = useAuthContext(); // Pegando o usuário autenticado
   const [userProfile, setUserProfile] = useState(null);
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const [sortType, setSortType] = useState('recent');
 
   const getUserProfileAndRepos = useCallback(async (username) => {
@@ -34,8 +36,11 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    getUserProfileAndRepos();
-  }, [getUserProfileAndRepos]);
+    if (!authLoading && authUser) {
+      // Se o usuário está logado, carrega o perfil e os repositórios
+      getUserProfileAndRepos(authUser.username);
+    }
+  }, [authUser, authLoading, getUserProfileAndRepos]);
 
   const onSearch = async (e, username) => {
     e.preventDefault();
@@ -64,17 +69,27 @@ const HomePage = () => {
     setRepos([...repos]);
   };
 
+  if (authLoading) {
+    // Exibe um carregando até que a autenticação seja verificada
+    return <Spinner />;
+  }
+
+  if (!authUser) {
+    // Se o usuário não estiver autenticado, exibe a página de login
+    return <div>Login Page (ou componente de login)</div>;
+  }
+
   return (
     <div className="m-4">
       <Search onSearch={onSearch} />
       {repos.length > 0 && <SortRepos onSort={onSort} sortType={sortType} />}
       <div className="flex flex-col items-start justify-center gap-4 lg:flex-row">
         {userProfile && !loading && <ProfileInfo userProfile={userProfile} />}
-
         {!loading && <Repos repos={repos} />}
         {loading && <Spinner />}
       </div>
     </div>
   );
 };
+
 export default HomePage;
