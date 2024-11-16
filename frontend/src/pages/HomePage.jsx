@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
 
 import ProfileInfo from '../components/ProfileInfo';
 import Repos from '../components/Repos';
