@@ -14,7 +14,7 @@ export const explorePopularRepos = async (req, res) => {
 
 		const headers = {
 			Accept: 'application/vnd.github.v3+json',
-			Authorization: `token ${process.env.GITHUB_API_KEY}`, // Certifique-se de que o token é lido aqui
+			Authorization: `token ${process.env.GITHUB_API_KEY}`,
 		};
 
 		console.log('Headers:', headers); // Log para garantir que o token está presente
@@ -30,7 +30,6 @@ export const explorePopularRepos = async (req, res) => {
 
 		const data = response.data;
 
-		// Verificação adicional
 		if (!data.items || !Array.isArray(data.items)) {
 			console.error('Resposta da API não contém repositórios válidos:', data);
 			throw new Error('A resposta da API não contém repositórios válidos');
@@ -39,6 +38,11 @@ export const explorePopularRepos = async (req, res) => {
 		res.status(200).json({ repos: data.items });
 	} catch (error) {
 		console.error('Error fetching repositories:', error);
-		res.status(500).json({ error: error.message });
+		res
+			.status(500)
+			.json({
+				error: error.message,
+				details: error.response ? error.response.data : null,
+			});
 	}
 };
