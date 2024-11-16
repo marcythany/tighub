@@ -3,13 +3,15 @@ import User from '../models/userModels.js';
 export const getUserProfileAndRepos = async (req, res) => {
 	const { username } = req.params;
 	try {
-		// 60 requests per hour, 5000 requests per hour for authenticated requests
-		// https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28
 		const userRes = await fetch(`https://api.github.com/users/${username}`, {
 			headers: {
 				authorization: `token ${process.env.GITHUB_API_KEY}`,
 			},
 		});
+
+		console.log('Headers:', {
+			authorization: `token ${process.env.GITHUB_API_KEY}`,
+		}); // Log para garantir que o token está presente
 
 		const userProfile = await userRes.json();
 
@@ -22,6 +24,7 @@ export const getUserProfileAndRepos = async (req, res) => {
 
 		res.status(200).json({ userProfile, repos });
 	} catch (error) {
+		console.error('Error fetching user profile and repos:', error);
 		res.status(500).json({ error: error.message });
 	}
 };
@@ -48,12 +51,11 @@ export const likeProfile = async (req, res) => {
 		});
 		user.likedProfiles.push(userToLike.username);
 
-		// await userToLike.save();
-		// await user.save();
 		await Promise.all([userToLike.save(), user.save()]);
 
 		res.status(200).json({ message: 'User liked' });
 	} catch (error) {
+		console.error('Error liking profile:', error);
 		res.status(500).json({ error: error.message });
 	}
 };
@@ -63,6 +65,7 @@ export const getLikes = async (req, res) => {
 		const user = await User.findById(req.user._id.toString());
 		res.status(200).json({ likedBy: user.likedBy });
 	} catch (error) {
+		console.error('Error getting likes:', error);
 		res.status(500).json({ error: error.message });
 	}
 };

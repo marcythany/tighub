@@ -14,12 +14,10 @@ export const explorePopularRepos = async (req, res) => {
 
 		const headers = {
 			Accept: 'application/vnd.github.v3+json',
+			Authorization: `token ${process.env.GITHUB_API_KEY}`, // Certifique-se de que o token é lido aqui
 		};
 
-		// Adicione o token apenas se estiver configurado
-		if (process.env.GITHUB_API_KEY) {
-			headers.Authorization = `token ${process.env.GITHUB_API_KEY}`;
-		}
+		console.log('Headers:', headers); // Log para garantir que o token está presente
 
 		const response = await axios.get(url, { headers });
 
