@@ -3,7 +3,7 @@ import {
 	getLikes,
 	getUserProfileAndRepos,
 	likeProfile,
-} from '../controllers/user.controller.js';
+} from '../controllers/userController.js';
 import { ensureAuthenticated } from '../middleware/ensureAuthenticated.js';
 
 const router = express.Router();
