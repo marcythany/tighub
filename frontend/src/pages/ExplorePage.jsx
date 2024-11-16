@@ -4,6 +4,34 @@ import Spinner from '../components/Spinner';
 import Repos from '../components/Repos';
 import IconComponent, { TECH_ICONS } from '../components/IconComponent';
 
+// Lista de linguagens válidas
+const LINGUAGENS_VALIDAS = [
+  'JavaScript',
+  'TypeScript',
+  'Python',
+  'Java',
+  'C++',
+  'Swift',
+  'C#',
+  'Go',
+  'HTML',
+  'CSS',
+  'Ruby',
+  'PHP',
+  'Rust',
+  'Kotlin',
+  'Dart',
+  'R',
+  'Scala',
+  'Perl',
+  'Haskell',
+  'Julia',
+  'Lua',
+  'Shell',
+  'PowerShell',
+  'SQL',
+];
+
 const ExplorePage = () => {
   const [loading, setLoading] = useState(false);
   const [repos, setRepos] = useState([]);
@@ -12,8 +40,8 @@ const ExplorePage = () => {
 
   // Função para buscar repositórios populares de uma linguagem específica
   const exploreRepos = async (language) => {
-    if (!language) {
-      toast.error('Nenhuma linguagem especificada.');
+    if (!language || !LINGUAGENS_VALIDAS.includes(language)) {
+      toast.error('Nenhuma linguagem válida especificada.');
       return;
     }
 
@@ -21,8 +49,11 @@ const ExplorePage = () => {
     setRepos([]); // Limpa os repositórios ao iniciar uma nova busca
 
     try {
+      // Converte a linguagem para o formato desejado (ex.: minúsculas)
+      const formattedLanguage = language.toLowerCase();
+
       // Faz a chamada para a API do backend
-      const res = await fetch(`/api/explore/repos/${language}`);
+      const res = await fetch(`/api/explore/repos/${formattedLanguage}`);
 
       if (!res.ok) {
         const errorData = await res.json();
@@ -63,13 +94,13 @@ const ExplorePage = () => {
 
   // Função para selecionar uma tecnologia e buscar repositórios
   const onSelect = (tech) => {
-    if (!tech) {
+    if (!tech || !LINGUAGENS_VALIDAS.includes(tech)) {
       toast.error('Tecnologia selecionada não é válida.');
       return;
     }
 
     setSelected(tech);
-    exploreRepos(tech.toLowerCase()); // Chama a API para a linguagem selecionada
+    exploreRepos(tech); // Chama a API para a linguagem selecionada
   };
 
   // Função para atualizar os repositórios da linguagem atual
@@ -98,7 +129,7 @@ const ExplorePage = () => {
         </div>
 
         <div className="my-2 flex flex-wrap justify-center gap-2">
-          {Object.keys(TECH_ICONS).map((tech) => (
+          {LINGUAGENS_VALIDAS.map((tech) => (
             <button
               key={tech}
               onClick={() => onSelect(tech)}
