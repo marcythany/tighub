@@ -76,7 +76,11 @@ const HomePage = () => {
 
   if (!authUser) {
     // Se o usuário não estiver autenticado, exibe a página de login
-    return <div>Login Page (ou componente de login)</div>;
+    return (
+      <div>
+        <LoginPage />
+      </div>
+    );
   }
 
   return (
