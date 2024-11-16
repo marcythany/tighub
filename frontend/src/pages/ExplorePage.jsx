@@ -3,7 +3,6 @@ import toast from 'react-hot-toast';
 import Spinner from '../components/Spinner';
 import Repos from '../components/Repos';
 import IconComponent, { TECH_ICONS } from '../components/IconComponent';
-import { API_URL } from '../lib/functions';
 
 const ExplorePage = () => {
   const [loading, setLoading] = useState(false);
@@ -26,7 +25,8 @@ const ExplorePage = () => {
       const result = await res.json();
       console.log('Resposta da API:', result); // Verifique a resposta no console
 
-      const data = result.data.items; // Acesse data.items em vez de result.items
+      // A resposta agora está sob a chave 'repos', então vamos usá-la diretamente
+      const data = result.repos;
 
       // Verifica se os repositórios foram encontrados e se são válidos
       if (
