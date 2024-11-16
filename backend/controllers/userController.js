@@ -11,7 +11,15 @@ export const getUserProfileAndRepos = async (req, res) => {
 
 		console.log('Headers:', {
 			authorization: `token ${process.env.GITHUB_API_KEY}`,
-		}); // Log para garantir que o token está presente
+		});
+
+		if (!userRes.ok) {
+			const errorData = await userRes.json();
+			console.error('Erro ao buscar perfil do usuário:', errorData);
+			throw new Error(
+				errorData.message || `GitHub API error: ${userRes.status}`
+			);
+		}
 
 		const userProfile = await userRes.json();
 
@@ -20,12 +28,26 @@ export const getUserProfileAndRepos = async (req, res) => {
 				authorization: `token ${process.env.GITHUB_API_KEY}`,
 			},
 		});
+
+		if (!repoRes.ok) {
+			const errorData = await repoRes.json();
+			console.error('Erro ao buscar repositórios do usuário:', errorData);
+			throw new Error(
+				errorData.message || `GitHub API error: ${repoRes.status}`
+			);
+		}
+
 		const repos = await repoRes.json();
 
 		res.status(200).json({ userProfile, repos });
 	} catch (error) {
 		console.error('Error fetching user profile and repos:', error);
-		res.status(500).json({ error: error.message });
+		res
+			.status(500)
+			.json({
+				error: error.message,
+				details: error.response ? error.response.data : null,
+			});
 	}
 };
 
