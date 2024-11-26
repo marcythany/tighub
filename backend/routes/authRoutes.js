@@ -3,32 +3,38 @@ import passport from 'passport';
 
 const router = express.Router();
 
+// Rota de login
+// Aqui, o usuário será redirecionado para o GitHub para autenticação
+router.get(
+	'/login',
+	passport.authenticate('github', { scope: ['user:email'] })
+);
+
+// Rota para autenticação com o GitHub
 router.get(
 	'/github',
 	passport.authenticate('github', { scope: ['user:email'] })
 );
 
+// Callback da autenticação com o GitHub
 router.get(
 	'/github/callback',
-	passport.authenticate('github', {
-		failureRedirect: process.env.CLIENT_BASE_URL + '/login',
-	}),
-	function (req, res) {
-		res.redirect(process.env.CLIENT_BASE_URL);
+	passport.authenticate('github', { failureRedirect: '/login' }),
+	async (req, res) => {
+		res.json({
+			message: 'Autenticação bem-sucedida!',
+			user: req.user, // Dados do usuário autenticado
+		});
 	}
 );
 
-router.get('/check', (req, res) => {
-	if (req.isAuthenticated()) {
-		res.send({ user: req.user });
-	} else {
-		res.send({ user: null });
-	}
-});
-
+// Rota de logout
 router.get('/logout', (req, res) => {
-	req.session.destroy((err) => {
-		res.json({ message: 'Logged out' });
+	req.logout((err) => {
+		if (err) {
+			return res.status(500).json({ message: 'Erro ao tentar deslogar.' });
+		}
+		res.redirect('/'); // Redireciona após o logout
 	});
 });
 

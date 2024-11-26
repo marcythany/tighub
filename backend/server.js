@@ -1,41 +1,50 @@
 import express from 'express';
+import passport from 'passport';
 import dotenv from 'dotenv';
 import session from 'express-session';
-import passport from 'passport';
-
-import './passport/githubAuth.js';
-
+import { connectDB } from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
-import exploreRoutes from './routes/exploreRoutes.js';
-import ConnectDB from './db/connectDB.js';
-import path from 'path';
+import repositoryRoutes from './routes/repositoryRoutes.js';
 
+// Carregar variáveis de ambiente
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-const __dirname = path.resolve();
 
+// Conexão ao MongoDB
+connectDB();
+
+// Middleware de session e Passport
 app.use(
-	session({ secret: 'keyboard cat', resave: false, saveUninitialized: false })
+	session({
+		secret: 'secreta',
+		resave: false,
+		saveUninitialized: true,
+	})
 );
-// Initialize Passport!  Also use passport.session() middleware, to support
-// persistent login sessions (recommended).
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/explore', exploreRoutes);
+// Middleware para tratar JSON
+app.use(express.json());
 
-app.use(express.static(path.join(__dirname, '/frontend/dist')));
+// Usar as rotas de autenticação
+app.use('/auth', authRoutes);
 
-app.get('*', (req, res) => {
-	res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
+// Usar as rotas de usuários
+app.use('/users', userRoutes);
+
+// Usar as rotas de repositórios
+app.use('/repositories', repositoryRoutes);
+
+// Rota de teste
+app.get('/', (req, res) => {
+	res.send('Bem-vindo ao Backend do Tighub!');
 });
 
+// Iniciar o servidor
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-	console.log(`Server started on http://localhost:${PORT}`);
-	ConnectDB();
+	console.log(`Servidor rodando na porta ${PORT}`);
 });

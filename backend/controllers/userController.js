@@ -1,93 +1,60 @@
-import User from '../models/userModels.js';
+import User from '../models/User.js';
+import { getUserProfile } from '../services/githubService.js'; // Para obter informações do GitHub
 
-export const getUserProfileAndRepos = async (req, res) => {
-	const { username } = req.params;
+// Criar ou encontrar um usuário no banco de dados com base no perfil do GitHub
+export const createOrFindUser = async (accessToken) => {
 	try {
-		const userRes = await fetch(`https://api.github.com/users/${username}`, {
-			headers: {
-				authorization: `token ${process.env.GITHUB_API_KEY}`,
-			},
-		});
+		// Buscar o perfil do usuário do GitHub
+		const profile = await getUserProfile(accessToken);
 
-		console.log('Headers:', {
-			authorization: `token ${process.env.GITHUB_API_KEY}`,
-		});
+		// Verificar se o usuário já existe no banco de dados
+		let user = await User.findOne({ githubId: profile.id });
 
-		if (!userRes.ok) {
-			const errorData = await userRes.json();
-			console.error('Erro ao buscar perfil do usuário:', errorData);
-			throw new Error(
-				errorData.message || `GitHub API error: ${userRes.status}`
-			);
-		}
-
-		const userProfile = await userRes.json();
-
-		const repoRes = await fetch(userProfile.repos_url, {
-			headers: {
-				authorization: `token ${process.env.GITHUB_API_KEY}`,
-			},
-		});
-
-		if (!repoRes.ok) {
-			const errorData = await repoRes.json();
-			console.error('Erro ao buscar repositórios do usuário:', errorData);
-			throw new Error(
-				errorData.message || `GitHub API error: ${repoRes.status}`
-			);
-		}
-
-		const repos = await repoRes.json();
-
-		res.status(200).json({ userProfile, repos });
-	} catch (error) {
-		console.error('Error fetching user profile and repos:', error);
-		res
-			.status(500)
-			.json({
-				error: error.message,
-				details: error.response ? error.response.data : null,
+		if (!user) {
+			// Se o usuário não existir, cria um novo
+			user = new User({
+				githubId: profile.id,
+				username: profile.login,
+				email: profile.email,
+				avatarUrl: profile.avatar_url,
+				accessToken: accessToken,
 			});
+			await user.save();
+		}
+
+		return user;
+	} catch (error) {
+		console.error('Erro ao criar ou buscar o usuário:', error.message);
+		throw new Error('Erro ao criar ou buscar o usuário');
 	}
 };
 
-export const likeProfile = async (req, res) => {
+// Buscar o perfil do usuário logado
+export const getUserProfileById = async (userId) => {
 	try {
-		const { username } = req.params;
-		const user = await User.findById(req.user._id.toString());
-		console.log(user, 'auth user');
-		const userToLike = await User.findOne({ username });
-
-		if (!userToLike) {
-			return res.status(404).json({ error: 'User is not a member' });
+		const user = await User.findById(userId).populate('repositories');
+		if (!user) {
+			throw new Error('Usuário não encontrado');
 		}
+		return user;
+	} catch (error) {
+		console.error('Erro ao buscar o perfil do usuário:', error.message);
+		throw new Error('Erro ao buscar o perfil do usuário');
+	}
+};
 
-		if (user.likedProfiles.includes(userToLike.username)) {
-			return res.status(400).json({ error: 'User already liked' });
-		}
-
-		userToLike.likedBy.push({
-			username: user.username,
-			avatarUrl: user.avatarUrl,
-			likedDate: Date.now(),
+// Atualizar as informações do usuário
+export const updateUserProfile = async (userId, updateData) => {
+	try {
+		const user = await User.findByIdAndUpdate(userId, updateData, {
+			new: true,
 		});
-		user.likedProfiles.push(userToLike.username);
-
-		await Promise.all([userToLike.save(), user.save()]);
-
-		res.status(200).json({ message: 'User liked' });
+		if (!user) {
+			throw new Error('Usuário não encontrado');
+		}
+		return user;
 	} catch (error) {
-		console.error('Error liking profile:', error);
-		res.status(500).json({ error: error.message });
-	}
-};
-
-export const getLikes = async (req, res) => {
-	try {
-		const user = await User.findById(req.user._id.toString());
-		res.status(200).json({ likedBy: user.likedBy });
-	} catch (error) {
-		console.error('Error getting likes:', error);
-		res.status(500).json({ error: error.message });
+		console.error('Erro ao atualizar o perfil do usuário:', error.message);
+		throw new Error('Erro ao atualizar o perfil do usuário');
 	}
 };
