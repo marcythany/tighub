@@ -1,3 +1,0 @@
-[test]
-preload = ["./js/tests/setup.js"]
-coverage = true

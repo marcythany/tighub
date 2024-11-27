@@ -5,19 +5,17 @@
   "main": "backend/server.js",
   "type": "module",
   "engines": {
-    "node": ">=18.0.0",
-    "bun": ">=1.0.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
-    "start": "bun backend/server.js",
-    "dev": "bun --watch backend/server.js",
-    "dev:frontend": "cd frontend && bun run dev",
-    "install": "bun install",
-    "build": "bun install && cd frontend && bun run build",
-    "test": "bun test"
+    "start": "node backend/server.js",
+    "dev": "nodemon --watch backend/server.js",
+    "dev:frontend": "cd frontend && npm run dev",
+    "install": "npm install",
+    "build": "npm install && cd frontend && npm run build",
+    "test": "npm test"
   },
   "devDependencies": {
-    "bun-types": "latest",
     "nodemon": "^3.1.7"
   },
   "dependencies": {
