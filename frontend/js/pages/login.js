@@ -25,7 +25,7 @@ export function initializeLoginPage(contentArea) {
                                 <button
                                     type="button"
                                     class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 dark:bg-teal-700 dark:hover:bg-teal-600"
-                                    onclick="window.location.href='/auth/github'"
+                                    onclick="window.location.href='/api/auth/github'"
                                 >
                                     <span class="absolute left-0 inset-y-0 flex items-center pl-3">
                                         <svg class="h-5 w-5 text-teal-500 group-hover:text-teal-400" viewBox="0 0 24 24" fill="currentColor">

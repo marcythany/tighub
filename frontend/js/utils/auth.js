@@ -2,7 +2,7 @@ import { fetchAPI } from './api.js';
 
 export async function checkAuthStatus() {
     try {
-        const data = await fetchAPI('/auth/status');
+        const data = await fetchAPI('/api/auth/status');
         return {
             isAuthenticated: data.authenticated,
             user: data.user
@@ -26,7 +26,7 @@ export function redirectToSignup() {
 
 export async function logout() {
     try {
-        await fetchAPI('/auth/logout', { method: 'POST' });
+        await fetchAPI('/api/auth/logout', { method: 'POST' });
         window.location.href = '/pages/login.html';
     } catch (error) {
         console.error('Logout failed:', error);

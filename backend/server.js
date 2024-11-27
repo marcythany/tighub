@@ -7,6 +7,8 @@ import { connectDB } from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import repositoryRoutes from './routes/repositoryRoutes.js';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 // Load environment variables
 dotenv.config();
@@ -25,6 +27,9 @@ const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
 if (missingEnvVars.length > 0) {
     throw new Error(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
 }
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -76,10 +81,18 @@ app.use((req, res, next) => {
     next();
 });
 
-// Routes
-app.use('/auth', authRoutes);
+// Middleware para servir arquivos estáticos do frontend
+app.use(express.static(join(__dirname, '../frontend/dist')));
+
+// Rotas da API
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/repositories', repositoryRoutes);
+
+// Rota para todas as outras requisições que não são da API
+app.get('*', (req, res) => {
+    res.sendFile(join(__dirname, '../frontend/dist/index.html'));
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
