@@ -125,6 +125,7 @@ export const translations = {
         'loginSubtitle': 'Sign in to continue',
         'loginDescription': 'Connect with GitHub to access your repositories and more.',
         'signInWithGithub': 'Sign in with GitHub',
+        'loginWithGithub': 'Login with GitHub',
         'privacyNotice': 'By signing in, you agree to our {privacy} and {terms}',
         'and': 'and',
         
