@@ -5,13 +5,17 @@ export default defineConfig({
     proxy: {
       // Proxy /api requests to the backend
       '/api': {
-        target: 'http://localhost:3000',
+        target: process.env.NODE_ENV === 'production' 
+          ? 'https://tighub.onrender.com'
+          : 'http://localhost:3000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       },
       // Proxy /auth requests to the backend
       '/auth': {
-        target: 'http://localhost:3000',
+        target: process.env.NODE_ENV === 'production'
+          ? 'https://tighub.onrender.com'
+          : 'http://localhost:3000',
         changeOrigin: true
       }
     }
