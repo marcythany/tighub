@@ -12,7 +12,7 @@ const defaultOptions = {
 
 /**
  * Makes an API request with proper error handling
- * @param {string} endpoint - The API endpoint (e.g., '/users/profile')
+ * @param {string} endpoint - The API endpoint (e.g., '/api/users/profile')
  * @param {object} options - Fetch options
  * @returns {Promise<any>} Response data
  * @throws {Error} API error with message
