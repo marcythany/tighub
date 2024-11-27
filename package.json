@@ -9,7 +9,7 @@
     "start": "node backend/server.js",
     "dev": "nodemon backend/server.js",
     "dev:frontend": "cd frontend && npm run dev",
-    "build": "cd frontend && npm install && npm run build",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
     "test": "npm test"
   },
   "devDependencies": {
