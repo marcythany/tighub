@@ -46,7 +46,7 @@ passport.deserializeUser(async (id, done) => {
 const githubConfig = {
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: `${process.env.BASE_URL}/auth/github/callback`,
+    callbackURL: `${process.env.BASE_URL}/api/auth/github/callback`,
 };
 
 passport.use('github', new GitHubStrategy(githubConfig,

@@ -179,7 +179,7 @@ describe('ApiClient', () => {
     });
 
     describe('Authentication endpoints', () => {
-        test('login should make GET request to /auth/github', async () => {
+        test('login should make GET request to /api/auth/github', async () => {
             let fetchCalled = false;
             let fetchUrl = '';
             let fetchOptions = {};
@@ -196,11 +196,11 @@ describe('ApiClient', () => {
 
             await api.auth.login();
             expect(fetchCalled).toBe(true);
-            expect(fetchUrl).toContain('/auth/github');
+            expect(fetchUrl).toContain('/api/auth/github');
             expect(fetchOptions.method).toBe('GET');
         });
 
-        test('logout should make POST request to /auth/logout', async () => {
+        test('logout should make POST request to /api/auth/logout', async () => {
             let fetchCalled = false;
             let fetchUrl = '';
             let fetchOptions = {};
@@ -217,11 +217,11 @@ describe('ApiClient', () => {
 
             await api.auth.logout();
             expect(fetchCalled).toBe(true);
-            expect(fetchUrl).toContain('/auth/logout');
+            expect(fetchUrl).toContain('/api/auth/logout');
             expect(fetchOptions.method).toBe('POST');
         });
 
-        test('getUser should make GET request to /auth/user', async () => {
+        test('getUser should make GET request to /api/auth/user', async () => {
             let fetchCalled = false;
             let fetchUrl = '';
             let fetchOptions = {};
@@ -238,7 +238,7 @@ describe('ApiClient', () => {
 
             await api.auth.getUser();
             expect(fetchCalled).toBe(true);
-            expect(fetchUrl).toContain('/auth/user');
+            expect(fetchUrl).toContain('/api/auth/user');
             expect(fetchOptions.method).toBe('GET');
         });
     });

@@ -46,7 +46,7 @@ export async function fetchAPI(endpoint, options = {}) {
  */
 export async function checkAuthentication() {
     try {
-        const response = await fetchAPI('/auth/status');
+        const response = await fetchAPI('/api/auth/status');
         return response;
     } catch (error) {
         return { authenticated: false, user: null };

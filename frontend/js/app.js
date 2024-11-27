@@ -25,7 +25,7 @@ let currentPageCleanup = null;
 // Handle navigation
 async function loadPage(path) {
     try {
-        const response = await fetch(`/auth/status`, { credentials: 'include' });
+        const response = await fetch(`/api/auth/status`, { credentials: 'include' });
         const authData = await response.json();
         
         if (!authData.authenticated && path !== '/login') {

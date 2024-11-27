@@ -139,7 +139,7 @@ export function createNavigation() {
         const logoutBtn = e.target.closest('#logout-btn');
         if (logoutBtn) {
             try {
-                const response = await fetch('/auth/logout', {
+                const response = await fetch('/api/auth/logout', {
                     method: 'POST',
                     credentials: 'include'
                 });
@@ -156,7 +156,7 @@ export function createNavigation() {
     // Load user data
     const loadUserData = async () => {
         try {
-            const response = await fetch('/auth/status', {
+            const response = await fetch('/api/auth/status', {
                 credentials: 'include'
             });
             

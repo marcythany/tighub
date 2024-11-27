@@ -139,9 +139,9 @@ class ApiClient {
 
     // API endpoints
     auth = {
-        login: () => this.get('/auth/github'),
-        logout: () => this.post('/auth/logout'),
-        getUser: () => this.get('/auth/user')
+        login: () => this.get('/api/auth/github'),
+        logout: () => this.post('/api/auth/logout'),
+        getUser: () => this.get('/api/auth/user')
     };
 
     users = {
