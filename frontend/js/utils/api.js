@@ -1,7 +1,7 @@
 /**
  * Base configuration for API requests
  */
-const API_BASE_URL = 'http://localhost:3000'; // URL do backend
+const API_BASE_URL = import.meta.env.PROD ? 'https://tighub.onrender.com' : 'http://localhost:3000'; // URL do backend
 
 const defaultOptions = {
     credentials: 'include',

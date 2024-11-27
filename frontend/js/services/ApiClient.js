@@ -17,7 +17,7 @@ class ApiError extends Error {
  */
 class ApiClient {
     constructor() {
-        this.baseURL = import.meta.env.PROD ? '/api' : 'http://localhost:3000';
+        this.baseURL = import.meta.env.PROD ? 'https://tighub.onrender.com' : 'http://localhost:3000';
     }
 
     /**
