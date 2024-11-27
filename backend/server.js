@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+//import dotenv from 'dotenv';
 import express from 'express';
 import session from 'express-session';
 import cors from 'cors';
@@ -9,7 +9,7 @@ import userRoutes from './routes/userRoutes.js';
 import repositoryRoutes from './routes/repositoryRoutes.js';
 
 // Load environment variables
-dotenv.config();
+//dotenv.config();
 
 // Verify required environment variables
 const requiredEnvVars = [
