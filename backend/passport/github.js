@@ -49,11 +49,6 @@ const githubConfig = {
     callbackURL: `${process.env.BASE_URL}/auth/github/callback`,
 };
 
-console.log('GitHub OAuth Configuration:', {
-    clientID: process.env.GITHUB_CLIENT_ID ? 'Set' : 'Not Set',
-    callbackURL: githubConfig.callbackURL
-});
-
 passport.use('github', new GitHubStrategy(githubConfig,
     async function (accessToken, refreshToken, profile, done) {
         try {
@@ -61,7 +56,6 @@ passport.use('github', new GitHubStrategy(githubConfig,
             try {
                 await checkGithubRateLimit(accessToken);
             } catch (error) {
-                console.warn('GitHub rate limit warning:', error.message);
                 // Continue with authentication even if rate limit check fails
             }
 
@@ -69,7 +63,6 @@ passport.use('github', new GitHubStrategy(githubConfig,
             const user = await User.findOrCreateFromGitHub(profile, accessToken);
             return done(null, user);
         } catch (error) {
-            console.error('Erro na autenticação do GitHub:', error);
             return done(error, null);
         }
     }

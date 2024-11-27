@@ -23,12 +23,8 @@ passport.use(
 				const remainingRequests = response.data.resources.core.remaining;
 				const resetTime = response.data.resources.core.reset;
 
-				console.log(`Requests restantes: ${remainingRequests}`);
-				console.log(`Limite será resetado às: ${new Date(resetTime * 1000)}`);
-
 				if (remainingRequests <= 0) {
 					const waitTime = resetTime * 1000 - Date.now();
-					console.log(`Aguardando ${waitTime / 1000} segundos até o reset...`);
 					await new Promise((resolve) => setTimeout(resolve, waitTime));
 				}
 

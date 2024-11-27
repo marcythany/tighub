@@ -25,6 +25,24 @@ export const translations = {
         'settings': 'Settings',
         'login': 'Login',
         
+        // Home Page
+        'welcome': 'Welcome to TiGHub',
+        'tagline': 'Your GitHub repository explorer',
+        'exploreTitle': 'Explore GitHub Repositories',
+        'exploreDescription': 'Discover interesting projects and connect with developers from around the world.',
+        'featuresTitle': 'Features',
+        'feature1Title': 'Repository Search',
+        'feature1Description': 'Search through millions of repositories with advanced filters.',
+        'feature2Title': 'User Profiles',
+        'feature2Description': 'View detailed user profiles and their contributions.',
+        'feature3Title': 'Favorites',
+        'feature3Description': 'Save your favorite repositories and users for quick access.',
+        'getStarted': 'Get Started',
+        'learnMore': 'Learn More',
+        'recentActivity': 'Recent Activity',
+        'noRecentActivity': 'No recent activity to show',
+        'home.noActivity': 'No recent activity',
+        
         // Repository Card
         'stars': 'stars',
         'forks': 'forks',
@@ -144,23 +162,6 @@ export const translations = {
         'tryAgain': 'Please try again later.',
         'repositoriesGrid': 'Repository Grid',
         
-        // Home Page
-        'welcome': 'Welcome to TiGHub',
-        'tagline': 'Your GitHub repository explorer',
-        'exploreTitle': 'Explore GitHub Repositories',
-        'exploreDescription': 'Discover interesting projects and connect with developers from around the world.',
-        'featuresTitle': 'Features',
-        'feature1Title': 'Repository Search',
-        'feature1Description': 'Search through millions of repositories with advanced filters.',
-        'feature2Title': 'User Profiles',
-        'feature2Description': 'View detailed user profiles and their contributions.',
-        'feature3Title': 'Favorites',
-        'feature3Description': 'Save your favorite repositories and users for quick access.',
-        'getStarted': 'Get Started',
-        'learnMore': 'Learn More',
-        'recentActivity': 'Recent Activity',
-        'noRecentActivity': 'No recent activity to show',
-        
         // Search
         'searchPlaceholder': 'Search for users or repositories...',
         'searchError': 'An error occurred while searching',
@@ -173,6 +174,29 @@ export const translations = {
         'about': 'About',
         'privacy': 'Privacy Policy',
         'terms': 'Terms of Service',
+        
+        // Features
+        'features': [
+            {
+                title: 'GitHub Integration',
+                description: 'Seamlessly connect with GitHub repositories and track your activity',
+                icon: 'github'
+            },
+            {
+                title: 'Real-time Updates',
+                description: 'Stay up to date with repository changes and notifications',
+                icon: 'bell'
+            },
+            {
+                title: 'Customizable Interface',
+                description: 'Personalize your experience with themes and language options',
+                icon: 'palette'
+            }
+        ],
+        
+        // Recent Activity
+        'recentActivity': 'Recent Activity',
+        'noRecentActivity': 'No recent activity',
     },
     'pt-BR': {
         // Comum
@@ -180,14 +204,14 @@ export const translations = {
         'error': 'Ocorreu um erro',
         'tryAgain': 'Por favor, tente novamente mais tarde',
         'search': 'Buscar',
-        'searchPlaceholder': 'Buscar por usuários ou repositórios...',
+        'searchPlaceholder': 'Busque por usuários ou repositórios...',
         'noResults': 'Nenhum resultado encontrado',
         'save': 'Salvar',
         'cancel': 'Cancelar',
         'delete': 'Excluir',
         'edit': 'Editar',
         'close': 'Fechar',
-        
+
         // Navegação
         'home': 'Início',
         'explore': 'Explorar',
@@ -196,9 +220,27 @@ export const translations = {
         'logout': 'Sair',
         'darkMode': 'Modo Escuro',
         'lightMode': 'Modo Claro',
-        'language': 'Linguagem',
+        'language': 'Idioma',
         'settings': 'Configurações',
         'login': 'Entrar',
+
+        // Página Inicial
+        'home.noActivity': 'Nenhuma atividade recente',
+        'welcome': 'Bem-vindo ao TiGHub',
+        'tagline': 'Seu explorador de repositórios GitHub',
+        'exploreTitle': 'Explore Repositórios GitHub',
+        'exploreDescription': 'Descubra projetos interessantes e conecte-se com desenvolvedores de todo o mundo.',
+        'featuresTitle': 'Funcionalidades',
+        'feature1Title': 'Busca de Repositórios',
+        'feature1Description': 'Pesquise milhões de repositórios com filtros avançados.',
+        'feature2Title': 'Perfis de Usuário',
+        'feature2Description': 'Visualize perfis detalhados de usuários e suas contribuições.',
+        'feature3Title': 'Favoritos',
+        'feature3Description': 'Salve seus repositórios e usuários favoritos para acesso rápido.',
+        'getStarted': 'Começar',
+        'learnMore': 'Saiba Mais',
+        'recentActivity': 'Atividade Recente',
+        'noRecentActivity': 'Nenhuma atividade recente para mostrar',
         
         // Cartão de Repositório
         'stars': 'estrelas',
@@ -282,6 +324,7 @@ export const translations = {
         'loginSubtitle': 'Entre para continuar',
         'loginDescription': 'Conecte-se com o GitHub para acessar seus repositórios e mais.',
         'signInWithGithub': 'Entrar com GitHub',
+        'loginWithGithub': 'Entrar com GitHub',
         'privacyNotice': 'Ao entrar, você concorda com nossa {privacy} e {terms}',
         'and': 'e',
         
@@ -319,23 +362,6 @@ export const translations = {
         'tryAgain': 'Por favor, tente novamente mais tarde.',
         'repositoriesGrid': 'Grade de Repositórios',
         
-        // Página Inicial
-        'welcome': 'Bem-vindo ao TiGHub',
-        'tagline': 'Seu explorador de repositórios GitHub',
-        'exploreTitle': 'Explore Repositórios GitHub',
-        'exploreDescription': 'Descubra projetos interessantes e conecte-se com desenvolvedores de todo o mundo.',
-        'featuresTitle': 'Funcionalidades',
-        'feature1Title': 'Busca de Repositórios',
-        'feature1Description': 'Pesquise milhões de repositórios com filtros avançados.',
-        'feature2Title': 'Perfis de Usuário',
-        'feature2Description': 'Visualize perfis detalhados de usuários e suas contribuições.',
-        'feature3Title': 'Favoritos',
-        'feature3Description': 'Salve seus repositórios e usuários favoritos para acesso rápido.',
-        'getStarted': 'Começar',
-        'learnMore': 'Saiba Mais',
-        'recentActivity': 'Atividade Recente',
-        'noRecentActivity': 'Nenhuma atividade recente para mostrar',
-        
         // Página de Login
         'loginWelcome': 'Bem-vindo ao TiGHub',
         'loginSubtitle': 'Conecte-se com o GitHub para começar',
@@ -347,5 +373,28 @@ export const translations = {
         
         // About
         'about': 'Sobre',
+        
+        // Features
+        'features': [
+            {
+                title: 'GitHub Integration',
+                description: 'Seamlessly connect with GitHub repositories and track your activity',
+                icon: 'github'
+            },
+            {
+                title: 'Real-time Updates',
+                description: 'Stay up to date with repository changes and notifications',
+                icon: 'bell'
+            },
+            {
+                title: 'Customizable Interface',
+                description: 'Personalize your experience with themes and language options',
+                icon: 'palette'
+            }
+        ],
+        
+        // Recent Activity
+        'recentActivity': 'Atividade Recente',
+        'noRecentActivity': 'Nenhuma atividade recente',
     }
 };

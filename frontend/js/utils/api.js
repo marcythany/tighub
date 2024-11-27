@@ -36,7 +36,6 @@ export async function fetchAPI(endpoint, options = {}) {
 
         return await response.json();
     } catch (error) {
-        console.error('API Error:', error);
         throw new Error(handleAPIError(error));
     }
 }
@@ -50,7 +49,6 @@ export async function checkAuthentication() {
         const response = await fetchAPI('/auth/status');
         return response;
     } catch (error) {
-        console.error('Authentication check failed:', error);
         return { authenticated: false, user: null };
     }
 }
@@ -111,9 +109,6 @@ export async function getLikedUsers() {
  * @returns {string} User-friendly error message
  */
 export function handleAPIError(error) {
-    // Log the full error for debugging
-    console.error('API Error Details:', error);
-
     if (error.message.includes('401')) {
         return 'You need to be logged in to perform this action.';
     }

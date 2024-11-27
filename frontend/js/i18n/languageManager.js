@@ -1,6 +1,6 @@
 import { translations } from './translations.js';
 
-class LanguageManager {
+export class LanguageManager {
     constructor() {
         const savedLanguage = localStorage.getItem('language');
         this.currentLanguage = translations[savedLanguage] ? savedLanguage : 'en';
@@ -21,11 +21,13 @@ class LanguageManager {
         if (this.isNotifying) return; // Previne chamadas recursivas
 
         if (!translations[lang]) {
-            console.warn(`Language "${lang}" not found. Falling back to English.`);
-            lang = 'en';
+            this.currentLanguage = 'en';
+            localStorage.setItem('language', 'en');
+            this.notifyListeners();
+            return;
         }
-        
-        if (this.currentLanguage !== lang) {
+
+        if (lang !== this.currentLanguage) {
             this.currentLanguage = lang;
             localStorage.setItem('language', lang);
             this.notifyListeners();
@@ -33,17 +35,23 @@ class LanguageManager {
     }
 
     translate(key, params = {}) {
+        if (key === undefined) return 'undefined';
+        if (key === null) return 'null';
+
         const languageTranslations = translations[this.currentLanguage] || translations['en'];
         const translation = languageTranslations[key];
         
         if (!translation) {
-            console.warn(`Translation key "${key}" not found in language "${this.currentLanguage}"`);
             return key;
+        }
+        
+        // If translation is not a string (e.g., array or object), return it as is
+        if (typeof translation !== 'string') {
+            return translation;
         }
         
         return translation.replace(/\{(\w+)\}/g, (match, param) => {
             if (params[param] === undefined) {
-                console.warn(`Parameter "${param}" not provided for translation key "${key}"`);
                 return match;
             }
             return params[param];
@@ -97,10 +105,11 @@ class LanguageManager {
         }
     }
 
-    // Método para limpar todos os listeners
+    // Method to clear all listeners (for testing purposes)
     clearListeners() {
         this.listeners.clear();
     }
 }
 
+// Export singleton instance
 export const languageManager = new LanguageManager();
