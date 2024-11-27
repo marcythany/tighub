@@ -1,80 +1,103 @@
-# TiGHub
+# TiGitHub
 
-TiGHub é uma aplicação web que permite explorar e interagir com perfis e repositórios do GitHub.
+## 📋 Sobre o Projeto
 
-## Recursos
+TiGitHub é uma aplicação web que integra com o GitHub, oferecendo funcionalidades adicionais para gerenciamento de repositórios e colaboração.
 
-- Autenticação com GitHub
-- Explorar perfis de usuários
-- Visualizar e interagir com repositórios
-- Sistema de likes para usuários e repositórios
-- Suporte a múltiplos idiomas (i18n)
-- Tema claro/escuro
+## 🚀 Tecnologias Utilizadas
 
-## Tecnologias
+### Frontend
 
-- Frontend: JavaScript (Vanilla), Vite, TailwindCSS
-- Backend: Node.js, Express, MongoDB
-- Autenticação: Passport.js com GitHub OAuth
+- Vite.js como build tool
+- TailwindCSS para estilização
+- Jest para testes
+- Babel para transpilação
+- Sistema de componentes modular
 
-## Configuração
+### Backend
 
-1. Clone o repositório:
+- Node.js com Express
+- MongoDB para banco de dados
+- Autenticação via GitHub OAuth
+- Sistema de rotas organizado
+- Middleware de autenticação
+- Arquitetura MVC
+
+## 🏗️ Estrutura do Projeto
+
+### Frontend (`/frontend`)
+
+- `/css` - Estilos globais
+- `/js` - Scripts e componentes JavaScript
+- `/pages` - Páginas da aplicação
+- `/public` - Arquivos estáticos
+- `/styles` - Estilos específicos de componentes
+
+### Backend (`/backend`)
+
+- `/config` - Configurações do servidor e banco de dados
+- `/controllers` - Controladores da aplicação
+- `/middleware` - Middlewares personalizados
+- `/models` - Modelos do banco de dados
+- `/routes` - Rotas da API
+- `/services` - Serviços da aplicação
+- `/passport` - Configuração de autenticação
+
+## 🔧 Configuração e Instalação
+
+### Pré-requisitos
+
+- Node.js
+- MongoDB
+- Conta no GitHub para autenticação OAuth
+
+### Frontend
 
 ```bash
-git clone https://github.com/marcythany/tighub.git
-cd tighub
-```
-
-2. Instale as dependências:
-
-```bash
-# Backend
-cd backend
-npm install
-
-# Frontend
-cd ../frontend
-npm install
-```
-
-3. Configure as variáveis de ambiente:
-   - Copie o arquivo `.env.example` para `.env` no diretório backend
-   - Preencha as variáveis necessárias:
-     - `MONGO_URI`: URL de conexão do MongoDB
-     - `SESSION_SECRET`: Chave secreta para as sessões
-     - `GITHUB_CLIENT_ID`: ID do cliente OAuth do GitHub
-     - `GITHUB_CLIENT_SECRET`: Chave secreta do OAuth do GitHub
-     - `CORS_ORIGINS`: Lista de origens permitidas (separadas por vírgula)
-
-4. Inicie o projeto em desenvolvimento:
-
-```bash
-# Terminal 1 - Backend
-cd backend
-npm run dev
-
-# Terminal 2 - Frontend
 cd frontend
+npm install
 npm run dev
 ```
 
-## Deploy
+### Backend
 
-Para fazer deploy no Render:
+```bash
+cd backend
+npm install
+# Configure o arquivo .env baseado no .env.example
+npm start
+```
 
-1. Conecte seu repositório ao Render
-2. Configure as variáveis de ambiente no dashboard do Render
-3. O deploy será automático a cada push na branch principal
+## 🔑 Variáveis de Ambiente
 
-## Contribuindo
+O backend requer as seguintes variáveis de ambiente:
+
+- `MONGO_URI`: URL de conexão com MongoDB
+- `SESSION_SECRET`: Chave secreta para sessões
+- `GITHUB_CLIENT_ID`: ID do cliente GitHub OAuth
+- `GITHUB_CLIENT_SECRET`: Chave secreta do GitHub OAuth
+- `FRONTEND_URL`: URL do frontend
+- `CORS_ORIGINS`: Origens permitidas para CORS
+
+## 📦 Scripts Disponíveis
+
+### Frontend
+
+- `npm run dev`: Inicia o servidor de desenvolvimento
+- `npm run build`: Gera build de produção
+- `npm run preview`: Visualiza build de produção
+- `npm test`: Executa testes
+- `npm run test:watch`: Executa testes em modo watch
+- `npm run test:coverage`: Gera relatório de cobertura de testes
+
+## 🤝 Contribuição
 
 1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
-3. Commit suas mudanças (`git commit -am 'Adiciona nova feature'`)
-4. Push para a branch (`git push origin feature/nova-feature`)
-5. Crie um Pull Request
+2. Crie uma branch para sua feature (`git checkout -b feature/NovaFeature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
+4. Push para a branch (`git push origin feature/NovaFeature`)
+5. Abra um Pull Request
 
-## Licença
+## 📝 Licença
 
-Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está sob a licença MIT.
