@@ -17,7 +17,8 @@ const requiredEnvVars = [
     'SESSION_SECRET',
     'GITHUB_CLIENT_ID',
     'GITHUB_CLIENT_SECRET',
-    'FRONTEND_URL'
+    'FRONTEND_URL',
+    'CORS_ORIGINS'
 ];
 
 const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
@@ -30,8 +31,20 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
+
+// CORS configuration
+const corsOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : [];
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
+    origin: function(origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (corsOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 
