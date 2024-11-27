@@ -44,13 +44,21 @@ app.use(cors({
         // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
         
-        if (corsOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+        // Em desenvolvimento, aceita qualquer origem
+        if (process.env.NODE_ENV !== 'production') {
+            return callback(null, true);
+        }
+        
+        // Em produção, verifica se a origem está na lista permitida
+        if (corsOrigins.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
         }
     },
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Session configuration
@@ -58,8 +66,10 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    proxy: true, // Necessário para HTTPS behind proxy
     cookie: {
         secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }

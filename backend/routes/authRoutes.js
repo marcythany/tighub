@@ -46,14 +46,27 @@ router.get('/github',
 // Callback da autenticação com o GitHub
 router.get('/github/callback',
     passport.authenticate('github', { 
-        failureRedirect: `${process.env.FRONTEND_URL}/login`,
+        failureRedirect: `${process.env.FRONTEND_URL}/login?error=auth_failed`,
         session: true
     }),
     (req, res) => {
-        // Get the stored return URL from session
-        const returnTo = req.session.returnTo || '/profile';
-        delete req.session.returnTo;
-        res.redirect(`${process.env.FRONTEND_URL}${returnTo}`);
+        try {
+            // Get the stored return URL from session
+            const returnTo = req.session.returnTo || '/profile';
+            delete req.session.returnTo;
+            
+            // Ensure the session is saved before redirecting
+            req.session.save((err) => {
+                if (err) {
+                    console.error('Session save error:', err);
+                    return res.redirect(`${process.env.FRONTEND_URL}/login?error=session_error`);
+                }
+                res.redirect(`${process.env.FRONTEND_URL}${returnTo}`);
+            });
+        } catch (error) {
+            console.error('Callback error:', error);
+            res.redirect(`${process.env.FRONTEND_URL}/login?error=callback_error`);
+        }
     }
 );
 
