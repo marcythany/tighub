@@ -79,7 +79,7 @@ export function createRepositoryCard(repo, isCurrentUser = false) {
                     repo.isLiked = !repo.isLiked;
                     updateContent();
                 } catch (error) {
-                    console.error('Error toggling repository like:', error);
+                    // Handle error silently and let the UI stay in current state
                 }
             });
         }
